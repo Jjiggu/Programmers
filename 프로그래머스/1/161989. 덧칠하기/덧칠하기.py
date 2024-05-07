@@ -1,15 +1,12 @@
 def solution(n, m, section):
     answer = 0
     
-    count = 1
+    # section[0]은 무조건 칠해야 함 -> 시작점을 section[0]으로 설정하고 count도 1로 초기화
     start_point = section[0]
-    
-    # 칠한지 안칠한지 확인하는 배열 생성 (칠하면 : 1, 안칠하면 : 0)
+    count = 1
 
-        
-    # section의 처음부터 m길이 만큼 탐색하여 칠하지 않은 경우에는 칠함으로 변경 count +1
-    # 한 번 칠한 뒤 다음 구역을 어떻게 구할건지?
     for i in section:
+        # 다음 섹션은 start_point + m 보다 큰 섹션에서 시작해야 함 -> 보다 작으면 같은 곳을 중복해서 칠하는것이라 최소 횟수 x
         if start_point + (m - 1) < i:
             start_point = i
             count += 1
