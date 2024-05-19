@@ -1,9 +1,4 @@
 def solution(num):
-    answer = 0
-    count = 0
-    
-
-    
     for count in range(1, 501):
         if num == 1:
             return 0
