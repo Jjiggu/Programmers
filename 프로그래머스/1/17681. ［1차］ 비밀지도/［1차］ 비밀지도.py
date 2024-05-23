@@ -10,7 +10,7 @@ def solution(n, arr1, arr2):
         
         # 2진수끼리 AND 연산
         and_result = format(int(arr1_binaryNum, 2) | int(arr2_binaryNum, 2), 'b')
-        result.append(and_result.zfill(n))
+        result.append(and_result.zfill(n).replace("1", "#").replace("0", " "))
     
     # 2개 겹친 배열에서 1이면 #, 0이면 " "
     for binary in result:
@@ -18,4 +18,4 @@ def solution(n, arr1, arr2):
         answer.append(wall)
         
     
-    return answer
+    return result
