@@ -10,12 +10,10 @@ def solution(n, arr1, arr2):
         
         # 2진수끼리 AND 연산
         and_result = format(int(arr1_binaryNum, 2) | int(arr2_binaryNum, 2), 'b')
-        result.append(and_result.zfill(n).replace("1", "#").replace("0", " "))
-    
-    # 2개 겹친 배열에서 1이면 #, 0이면 " "
-    for binary in result:
-        wall = binary.replace("1", "#").replace("0", " ")
-        answer.append(wall)
+        
+        # 2개 겹친 배열에서 1이면 #, 0이면 " "
+        # result.append(and_result.zfill(n).replace("1", "#").replace("0", " "))
+        result.append(and_result.rjust(n, '0').replace("1", "#").replace("0", " "))
         
     
     return result
