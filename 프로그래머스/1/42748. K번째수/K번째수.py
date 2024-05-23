@@ -3,7 +3,7 @@ def solution(array, commands):
     result = []
     
     # 배열 하나씩 뽑음
-    for array_list in commands:
-        sorted_list = sorted(array[array_list[0] - 1 : array_list[1]])
-        result.append(sorted_list[array_list[2] - 1])
+    for i, j, k in commands:
+        sorted_list = sorted(array[i - 1 : j])
+        result.append(sorted_list[k - 1])
     return result
