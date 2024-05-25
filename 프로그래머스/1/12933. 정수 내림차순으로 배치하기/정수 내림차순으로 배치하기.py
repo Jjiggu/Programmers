@@ -1,15 +1,16 @@
 def solution(n):
-    answer = ""
-    result_list = []
+    result_list = list(str(n))
     
-    for i in str(n):
-        result_list.append(int(i))  
+    result_list.sort(reverse=True)
     
-    result_list.sort()
-    result_list.reverse()
+#     for i in str(n):
+#         result_list.append(int(i))  
     
-    for j in result_list:
-        answer += str(j)
+#     result_list.sort()
+#     result_list.reverse()
+    
+#     for j in result_list:
+#         answer += str(j)
     
     
-    return int(answer)
+    return int("".join(result_list))
