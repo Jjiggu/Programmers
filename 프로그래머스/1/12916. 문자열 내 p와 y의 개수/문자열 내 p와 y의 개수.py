@@ -1,15 +1,18 @@
 def solution(s):
-    count_p = s.count('p')
-    count_P = s.count('P')
     
-    result_p = count_p + count_P
+    s = s.lower()
     
-    count_y = s.count('y')
-    count_Y = s.count('Y')
+#     count_p = s.count('p')
+#     count_P = s.count('P')
     
-    result_y = count_y + count_Y
+#     result_p = count_p + count_P
     
-    if result_p == result_y:
+#     count_y = s.count('y')
+#     count_Y = s.count('Y')
+    
+#     result_y = count_y + count_Y
+    
+    if s.count('p') == s.count('y'):
         return True
     else:
         return False
