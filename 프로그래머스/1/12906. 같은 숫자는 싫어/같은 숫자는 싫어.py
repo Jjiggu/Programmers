@@ -3,10 +3,13 @@ def solution(arr):
     temp = -1
     
     for i in arr:
-        if i == temp:
+        if answer[-1:] == [i]:
             continue
-        else:
-            answer.append(i)
-            temp = i
+        answer.append(i)
+        # if i == temp:
+        #     continue
+        # else:
+        #     answer.append(i)
+        #     temp = i
             
     return answer
