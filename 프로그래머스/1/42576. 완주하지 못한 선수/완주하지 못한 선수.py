@@ -1,4 +1,6 @@
 def solution(participant, completion):
+    
+    # 해시 쓰지 않고 간단하게 풀 수 있음
     participant.sort()
     completion.sort()
     for p, c in zip(participant, completion):
