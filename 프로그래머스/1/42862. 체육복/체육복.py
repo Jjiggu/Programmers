@@ -17,6 +17,7 @@ def solution(n, lost, reserve):
             lost.remove(i+1)
     
     return n-len(lost)
+
 #     cnt = len(reserve)
     
 #     # 길이 n만큼 True로 초기화 한 배열 생성
