@@ -31,6 +31,4 @@ def solution(survey, choices):
     answer += 'J' if score['J'] >= score['M'] else 'M'
     answer += 'A' if score['A'] >= score['N'] else 'N'
     
-    print(score)
-    
     return answer
