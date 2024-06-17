@@ -1,3 +1,4 @@
+import re
 def solution(new_id):
     answer = ''
     second_filter = ["-", "_", "."]
@@ -13,18 +14,21 @@ def solution(new_id):
             new_id = new_id.replace(i, "")
     
     # 3단계 ..이 연속으로 나오면 ..으로 치환
-    c = 0
-    new_id = list(new_id)
-    for i in range(len(new_id)):
-        if (new_id[i] == '.') and (c==0):
-            c += 1
-        elif (new_id[i] == '.') and (c>=1):
-            new_id[i] = ''
-            c += 1
-        elif new_id[i] != '.': 
-            c = 0 
-    new_id = "".join(new_id)         
+#     c = 0
+#     new_id = list(new_id)
+#     for i in range(len(new_id)):
+#         if (new_id[i] == '.') and (c==0):
+#             c += 1
+#         elif (new_id[i] == '.') and (c>=1):
+#             new_id[i] = ''
+#             c += 1
+#         elif new_id[i] != '.': 
+#             c = 0 
+#     new_id = "".join(new_id)  
+    
+    # 해당 코드 사용하면 특정 테케 통과 못 함
     # new_id = new_id.replace("..", ".")
+    new_id = re.sub('\.+', '.', new_id)
         
     # 4단계 마침표가 처음이나 끝에 위치한다면 제거
     if new_id[0] == ".":
@@ -48,5 +52,20 @@ def solution(new_id):
     if len(new_id) <= 2:
         while(len(new_id) <= 2):
             new_id += new_id[-1]
+    
+    
+    d = 0
+    new = "......"
+    new = list(new)
+    for i in range(len(new)):
+        if (new[i] == '.') and (d==0):
+            d += 1
+        elif (new[i] == '.') and (d>=1):
+            new[i] = ''
+            d += 1
+        elif new[i] != '.': 
+            d = 0 
+    
+    print(new)
     
     return new_id
