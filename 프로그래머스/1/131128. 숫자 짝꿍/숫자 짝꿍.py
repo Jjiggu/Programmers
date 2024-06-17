@@ -1,4 +1,20 @@
 def solution(X, Y):
+    # 시관 초과 개선 코드
+    # 공통 숫자 찾기 -> 중복된 숫자 있을 경우 체크하는 로직 필요
+    same_num = set(X) & set(Y)
+    
+    if not same_num:
+        return "-1"
+    elif len(same_num) == 1 and "0" in same_num:
+        return "0"
+
+    # 중복된 숫자 있을 경우 체크
+    result = [num * min(X.count(num), Y.count(num)) for num in same_num]
+    
+    # result 문자열을 내림차순으로 정렬하여 반환
+    return "".join(sorted(result, reverse=True))
+
+
 #     answer = ''
 #     list_X = list(X)
 #     list_Y = list(Y)
@@ -6,12 +22,14 @@ def solution(X, Y):
     
 #     test = []
     
+#     # X와 Y를 모두 탐색해야 해서 N^2 만큼의 시간복잡도 필요
+      # 공통 숫자 찾아
 #     for x in list_X:
 #         if x in list_Y:
 #             test.append(x)
 #             list_Y.remove(x)
     
-#     # 공통 숫자 찾아 리스트에 저장
+#     # 가장 큰 수(내림차순 정렬)
 #     # result = sorted(list(set(list_X) & set(list_Y)), reverse=True)
 #     result = sorted(test, reverse=True)
     
@@ -22,18 +40,6 @@ def solution(X, Y):
 #         answer = "".join(result)
 #         return str(int(answer))
 
-    # X와 Y에서 공통된 숫자를 찾기 위해 set() 연산을 사용
-    xy = set(X) & set(Y)
     
-    # 공통된 숫자가 없으면 -1을 반환
-    if not xy:
-        return "-1"
-    # 공통된 숫자가 0만 있으면 0을 반환
-    elif len(xy) == 1 and "0" in xy:
-        return "0"
     
-    # 각 공통된 숫자를 X와 Y에서 나타나는 횟수중 더 작은 수만큼 반복하여 문자열 생성
-    result = [n * min(X.count(n), Y.count(n)) for n in xy]
     
-    # result 문자열을 내림차순으로 정렬하여 반환
-    return "".join(sorted(result, reverse=True))
