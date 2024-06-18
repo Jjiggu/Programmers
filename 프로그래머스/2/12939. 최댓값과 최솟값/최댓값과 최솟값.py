@@ -1,12 +1,6 @@
 def solution(s):    
+    
     s = s.split()
-    result = []
+    result = [int(i) for i in s]
     
-    for i in s:
-        result.append(int(i))
-    
-    min_num = min(result)
-    
-    max_num = max(result)
-    
-    return f"{min_num} {max_num}"
+    return f"{min(result)} {max(result)}"
