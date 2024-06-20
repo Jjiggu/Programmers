@@ -9,10 +9,6 @@ def solution(s):
             if len(bracket_stack) != 0:
                 bracket_stack.pop()
             else:
-                bracket_stack.append(i)
-                
-    if len(bracket_stack) == 0:
-        return True
-    
-    else: 
-        return False
+                return False
+            
+    return len(bracket_stack) == 0
