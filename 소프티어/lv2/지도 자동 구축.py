@@ -1,3 +1,13 @@
+"""
+지도 자동 구축
+https://softeer.ai/practice/6280
+난이도
+Lv. 2
+정답률
+60.93 %
+"""
+
+
 import sys
 
 n = int(input())
