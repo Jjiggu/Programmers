@@ -10,14 +10,8 @@ def solution(want, number, discount):
         sale_list = discount[i - 10:i]
         
         if set(sale_list) == set(want): # sale_list에 want 목록이 다 있는지 확인
-            if sorted(want_dic.items()) == sorted(dict(Counter(sale_list)).items()): # 있으면 물건 개수 체크
+            # if sorted(want_dic.items()) == sorted(dict(Counter(sale_list)).items()): # 있으면 물건 개수 체크
+            if want_dic == dict(Counter(sale_list)):
                 possible_date += 1
-            #     print("됨")
-            # else:
-            #     print("안됨")
-
-        # else: # 없으면 배열 다음 인덱스로
-        #     print("안됨")
-        #     date += 1 # 없으면 날짜 + 1
     
     return possible_date
