@@ -38,6 +38,8 @@ for _ in range(y):
 
 print(result)
 
+# 오답 코드 -> 너무 복잡하게 생각함
+
 # limit_speed = [list(map(int, input().split())) for _ in range(x)]
 # gw_speed = [list(map(int, input().split())) for _ in range(y)]
 
