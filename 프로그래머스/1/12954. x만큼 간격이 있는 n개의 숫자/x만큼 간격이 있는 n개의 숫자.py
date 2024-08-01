@@ -1,7 +1,7 @@
 def solution(x, n):
-    answer = []
-    
-    for i in range(1, n + 1):
-        answer.append(x * i)
-    
-    return answer
+    result = []
+    now_num = 0
+    for _ in range(n):
+        result.append(now_num + x)
+        now_num += x
+    return result
