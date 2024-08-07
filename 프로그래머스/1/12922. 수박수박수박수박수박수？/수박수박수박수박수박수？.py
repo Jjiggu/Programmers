@@ -1,8 +1,13 @@
 def solution(n):
-    answer = ''
-    word = "수박"
+    result = ""
+    watermelon = "수박"
     
-    for i in range(n):
-        answer += word[i % 2]  
+    if n % 2 == 0:
+        result += watermelon * (n//2)
+        return result
     
-    return answer
+    else:
+        result += watermelon * (n//2)
+        result += watermelon[0]
+        return result
+        
