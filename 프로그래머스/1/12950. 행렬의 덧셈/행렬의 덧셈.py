@@ -1,11 +1,14 @@
 import numpy as np
 
 def solution(arr1, arr2):
-    answer = [[]]
+    result = [[c + d for c, d in zip(ar1, ar2)] for ar1, ar2 in zip(arr1, arr2)]
     
-    A = np.array(arr1)
-    B = np.array(arr2)
+    return result
+#     answer = [[]]
     
-    answer = A + B
+#     A = np.array(arr1)
+#     B = np.array(arr2)
     
-    return answer.tolist()
+#     answer = A + B
+    
+#     return answer.tolist()
