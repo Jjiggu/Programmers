@@ -6,5 +6,6 @@ def solution(price, money, count):
     
     if pay > money:
         return pay - money
+    
     else:
         return 0
