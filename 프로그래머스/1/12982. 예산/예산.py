@@ -1,15 +1,15 @@
 def solution(d, budget):
-    cnt = 0
     d = sorted(d)
-    new_budget = budget
+    current_budget = 0
+    cnt = 0
     
     for i in d:
-        new_budget -= i
-        if new_budget >= 0:
+        current_budget += i
+        
+        if current_budget > budget:
+            return cnt
+        
+        else:
             cnt += 1
-            
-        elif budget < 0:
-            break
     
     return cnt
-        
