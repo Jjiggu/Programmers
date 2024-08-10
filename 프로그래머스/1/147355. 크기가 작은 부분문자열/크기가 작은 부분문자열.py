@@ -1,7 +1,11 @@
 def solution(t, p):
-    answer = []
+    part_t_list = []
+    result = 0
     
     for i in range(len(t) - len(p) + 1):
-        answer.append(int(t[i:i + len(p)]))
+        part_t_list.append(int(t[i:i + len(p)]))
         
-    return sum(1 for num in answer if num <= int(p))
+        if int(t[i:i + len(p)]) <= int(p):
+            result += 1
+            
+    return result
