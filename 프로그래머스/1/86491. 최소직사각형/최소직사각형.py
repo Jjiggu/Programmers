@@ -1,33 +1,7 @@
 def solution(sizes):
-    new_num = 0
-    new_sizes = []
+    sorted_sizes = [sorted(i, reverse=True) for i in sizes]
     
-    row_max = 0
-    columns_max = 0
+    max_w = max(sub_arr[0] for sub_arr in sorted_sizes)
+    max_h = max(sub_arr[1] for sub_arr in sorted_sizes)
     
-    for row, columns in sizes:
-        if row < columns:
-        #     new_num = columns
-        #     columns = row
-        #     row = new_num
-        #     new_sizes.append([row, columns])
-        # else:
-        #     new_sizes.append([row, columns])
-        # 아래 코드로 변경 가능
-            row, columns = columns, row
-            
-        row_max = max(row, row_max)
-        columns_max = max(columns, columns_max)
-            
-            
-    
-#     for row, columns in new_sizes:
-#         if row > row_max:
-#             row_max = row
-        
-#         if columns > columns_max:
-#             columns_max = columns
-            
-    
-    
-    return row_max * columns_max
+    return max_w * max_h
