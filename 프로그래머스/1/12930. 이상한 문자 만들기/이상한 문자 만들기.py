@@ -1,16 +1,15 @@
 def solution(s):
-    word_list = list(s.split(" "))
-    upper_word = ""
+    s_list = s.split(" ")
+    result = []
     
-    for i in range(len(word_list)):
-        j = 0
-        for letter in word_list[i]:
-            if j % 2 == 0:
-                upper_word += letter.upper()
-                j += 1
+    for word in s_list:
+        letter = ""
+        for i in range(len(word)):
+            if i % 2 == 0:
+                letter += word[i].upper()
             else:
-                upper_word += letter.lower()
-                j += 1
-        upper_word += " "
-
-    return(upper_word[0:-1])
+                letter += word[i].lower()
+        
+        result.append(letter)
+    
+    return " ".join(result)
