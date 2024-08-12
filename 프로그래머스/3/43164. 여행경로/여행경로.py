@@ -8,7 +8,7 @@ def solution(tickets):
     
     for t_key in t_dict.keys():
         t_dict[t_key].sort(reverse = True)
-        
+    
     answer = []
     path = ["ICN"]
     
@@ -19,6 +19,6 @@ def solution(tickets):
             answer.append(path.pop())
         else:
             path.append(t_dict[now].pop())
-            
+        
     return answer[::-1]
     
