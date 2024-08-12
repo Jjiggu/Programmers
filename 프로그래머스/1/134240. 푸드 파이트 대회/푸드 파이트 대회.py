@@ -1,17 +1,11 @@
 def solution(food):
-    answer = ''
-    
+    first_man = ''
+
     for i in range(1, len(food)):
-        count = int(food[i]) // 2
-        for j in range(count):
-            answer = answer + str(i)
-            
-    answer = answer + str(0)
+        num_food = food[i] // 2
+        first_man += str(i) * num_food
     
-    for k in range(len(food)-1, 0, -1):
-        count = food[k] // 2
-        for h in range(count):
-            answer = answer + str(k)
-        
+    second_man = first_man[::-1]
     
-    return answer
+    
+    return first_man + "0" + second_man
