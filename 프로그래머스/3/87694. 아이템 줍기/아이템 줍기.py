@@ -4,6 +4,7 @@ def solution(rectangle, characterX, characterY, itemX, itemY):
     answer = 0
     
     field = [[-1] * 102 for i in range(102)]
+
     
     for r in rectangle:
         x1, y1, x2, y2 = map(lambda x : x*2, r)
