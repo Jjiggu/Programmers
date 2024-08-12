@@ -2,7 +2,8 @@ from collections import defaultdict
 
 def solution(tickets):
     t_dict = defaultdict(list)
-    
+    # result = sorted(tickets, key = lambda x: ((x[0], x[1])))
+
     for s, e in tickets:
         t_dict[s].append(e)
     
