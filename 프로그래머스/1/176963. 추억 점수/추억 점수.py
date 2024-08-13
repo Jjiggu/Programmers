@@ -1,16 +1,16 @@
 def solution(name, yearning, photo):
-    answer = []
-    name_list = []
+    score_dict = {key:value for key, value in zip(name, yearning)}
+    result = []
     
-    name_score = dict(zip(name, yearning))
+    for i in photo:
+        score = 0
+        for j in i:
+            try:
+                score += score_dict[j]
+                
+            except:
+                score += 0
+                
+        result.append(score)
     
-    for p in photo:
-        photo_sum = 0
-        
-        for p_name in p:
-            
-            photo_sum += name_score.get(p_name, 0)
-    
-        answer.append(photo_sum)
-    
-    return answer
+    return result
