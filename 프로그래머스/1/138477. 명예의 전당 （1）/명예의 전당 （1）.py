@@ -1,17 +1,15 @@
 def solution(k, score):
-    answer = []
-    
-    greate_list = []
     result = []
-    
-    for i in score:
-        if len(greate_list) < k:
-            greate_list.append(i)
-        else:
-            if i > min(greate_list):
-                greate_list.remove(min(greate_list))
-                greate_list.append(i)
+    tmp = []
         
-        result.append(min(greate_list))
-    
+    for i in range(len(score)):
+        if len(tmp) < k:
+            tmp.append(score[i])
+            
+        elif len(tmp) >= k and score[i] > min(tmp):
+            tmp.remove(min(tmp))
+            tmp.append(score[i])
+        
+        result.append(min(tmp))
+        
     return result
