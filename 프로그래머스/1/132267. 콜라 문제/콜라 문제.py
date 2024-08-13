@@ -1,9 +1,10 @@
 def solution(a, b, n):
-    answer = 0
-    cnt = 0
+    change_coke = 0
     
-    while(n >= a and n >= 2):
-        cnt += (n // a) * b
-        n = (n // a)*b + (n % a) 
+    while (n >= a):
+        change_coke += (n // a) * b
+        left_coke = n % a
+                 
+        n = (n // a) * b + left_coke
     
-    return cnt
+    return change_coke
