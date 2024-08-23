@@ -10,4 +10,4 @@ def solution(a, b):
     
     day = datetime.date(2016, a, b)
     
-    return weekday[day.weekday()]
+    return weekday[datetime.date(2016, a, b).weekday()]
