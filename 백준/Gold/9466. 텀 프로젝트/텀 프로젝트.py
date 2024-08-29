@@ -1,27 +1,30 @@
-def dfs(start):
-    stack = []
-    cycle_nodes = []
-    while True:
-        if visited[start]:
-            if start in stack:
-                cycle_start_index = stack.index(start)
-                cycle_nodes = stack[cycle_start_index:]
-            break
-        stack.append(start)
-        visited[start] = True
-        start = numbers[start]
+import sys
+sys.setrecursionlimit(111111) #충분한 재귀 깊이를 주어 오류를 예방
 
-    return cycle_nodes
+
+def dfs(x):
+    global result
+    visited[x] = True
+    cycle.append(x) #사이클을 이루는 팀을 확인하기 위함
+    number = numbers[x]
+    
+    if visited[number]: #방문가능한 곳이 끝났는지
+        if number in cycle: #사이클 가능 여부
+            result += cycle[cycle.index(number):] #사이클 되는 구간 부터만 팀을 이룸
+        return
+    else:
+        dfs(number)
+
 
 for _ in range(int(input())):
     N = int(input())
     numbers = [0] + list(map(int, input().split()))
-    visited = [False] * (N + 1)
-    result = set()
-
-    for i in range(1, N + 1):
-        if not visited[i]:
-            cycle_nodes = dfs(i)
-            result.update(cycle_nodes)
+    visited = [True] + [False] * N #방문 여부
+    result = []
     
-    print(N - len(result))
+    for i in range(1, N+1):
+        if not visited[i]: #방문 안한 곳이라면
+            cycle = []
+            dfs(i) #DFS 함수 돌림
+            
+    print(N - len(result)) #팀에 없는 사람 수
