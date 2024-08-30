@@ -7,9 +7,6 @@ def solution(data, ext, val_ext, sort_by):
         "remain" : 3
     }
     
-    filterd_data = [d for d in data if d[data_type[ext]] < val_ext]
+    date_list = [i for i in data if i[data_type[ext]] < val_ext]
     
-    sorted_data = sorted(filterd_data, key=lambda x: x[data_type[sort_by]])
-    
-    
-    return sorted_data
+    return sorted(date_list, key=lambda x:x[data_type[sort_by]])
