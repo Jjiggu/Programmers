@@ -12,23 +12,17 @@ def solution(survey, choices):
              "N":0            
             }
     
-    # survey 돌면서 점수 최신화
-    for index, types in enumerate(survey):
-        # 4보다 작으면 왼쪽 유형에 점수
-        if choices[index] < 4:
-            score[types[0]] += 4 - choices[index]
-        
-        # 4보다 크면 오른쪽 유형에 점수
-        elif choices[index] > 4:
-            score[types[1]] += choices[index] - 4
-            
-        elif choices[index] == 4:
-            continue
+    for mbti, num in zip(survey, choices):
+        if num > 4:
+            score[mbti[1]] += num % 4
+        if num < 4:
+            score[mbti[0]] += 4 - num 
     
-    # 유형 확인
     answer += 'R' if score['R'] >= score['T'] else 'T'
     answer += 'C' if score['C'] >= score['F'] else 'F'
     answer += 'J' if score['J'] >= score['M'] else 'M'
     answer += 'A' if score['A'] >= score['N'] else 'N'
     
     return answer
+            
+    
