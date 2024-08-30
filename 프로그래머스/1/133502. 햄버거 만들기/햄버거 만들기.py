@@ -1,10 +1,12 @@
 def solution(ingredient):    
+    # 햄버거 만드는 재료 순서 1 - 2 - 3 - 1
+    stack = []
     result = 0
-    current_stack = []
-    
     for i in ingredient:
-        current_stack.append(i)
-        if current_stack[-4:]==[1, 2, 3, 1]:
-            del current_stack[-4:]
+        stack.append(i)
+        if len(stack) >= 4 and stack[len(stack) - 4:] == [1, 2, 3, 1]:
             result += 1
+            for _ in range(4):
+                stack.pop()
+    
     return result
