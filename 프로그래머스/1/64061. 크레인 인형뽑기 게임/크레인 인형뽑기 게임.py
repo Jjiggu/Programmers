@@ -18,7 +18,5 @@ def solution(board, moves):
             else:
                 stack.append(doll)
     
-    print(stack)
-    
     return result
         
