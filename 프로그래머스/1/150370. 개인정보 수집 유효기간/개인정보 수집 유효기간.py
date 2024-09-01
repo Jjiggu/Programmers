@@ -11,45 +11,28 @@ def check_day(expiration_date, today):
 
 
 def solution(today, terms, privacies):
-    result = []
-    i = 1
-    # result_terms = []
-    # privacies_terms = []
-    
-    terms_map = dict()
-    privacies_map = dict()
-    
     today = list(map(int, today.split(".")))
+    expiration = {i[0]:int(i[2:]) for i in terms}
+    result = []
     
-    # terms 를 딕셔너리로 저장
-#     for term in terms:
-#         result_terms.append(term.split(" "))
+    for i in range(len(privacies)):
+        expiration_date, term = privacies[i].split(" ")
+        expiration_date = list(map(int, expiration_date.split(".")))
+        expiration_date[1] += expiration[term]
         
-#     for i, j in result_terms:
-#         terms_map[i] = j
-# 아래처럼 한 줄로 변경 가능
-    expiration = {term[0]:int(term[2:]) for term in terms}
         
-    # privacies를 딕셔너리로 저장
-    for pri in privacies:
-        pri = pri.split(" ")
-        pri_date = list(map(int, pri[0].split(".")))
-        
-        pri_date[1] += expiration[pri[1]]
-        
-        if pri_date[1] > 12:
-            if pri_date[1] % 12 == 0:
-                pri_date[0] += (pri_date[1]//12) -1
-                pri_date[1] = 12
+        if expiration_date[1] > 12:
+            if expiration_date[1] % 12 == 0:
+                expiration_date[0] += (expiration_date[1] // 12) - 1
+                expiration_date[1] = 12
+                
             else:
-                pri_date[0] += pri_date[1] // 12 
-                pri_date[1] %= 12
-            
-        # 약관유형 확인 후 날짜 계산해서 today보다 큰 지 확인
-        if check_day(pri_date, today) == False:
-            result.append(i)
+                expiration_date[0] += expiration_date[1] // 12
+                expiration_date[1] %= 12
         
-        i += 1
+        print(expiration_date)
+        
+        if check_day(expiration_date, today) == False:
+            result.append(i + 1)
     
-    # 크면 result에 추가
     return result
