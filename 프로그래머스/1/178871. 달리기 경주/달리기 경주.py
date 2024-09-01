@@ -1,24 +1,18 @@
 def solution(players, callings):
     answer = []
+    index_dict = {players[i]:i for i in range(len(players))}
     
-    players_map = {}
-    # index 맵 생성
-    for index, player in enumerate(players):
-        players_map[player] = index
-        
-    # callings 배열 순회하며 나온 값의 인덱스 확인
-    for name in callings:
-        # now_index = players.index(name)
-        now_index = players_map[name]
+    for i in callings:
+        now_index = index_dict[i]
         pre_index = now_index - 1
         
-        # 앞자리와 순서 변경
-        pre_word = players[pre_index]
-        players[pre_index] = name
-        players[now_index] = pre_word
+        tmp = players[now_index]
+        players[now_index] = players[now_index - 1]
+        players[now_index - 1] = tmp
         
-        # map 갱신
-        players_map[name] = pre_index
-        players_map[pre_word] = now_index
-    
+        index_dict[i] = now_index - 1
+        index_dict[players[now_index]] = now_index
+        
+        
+        
     return players
