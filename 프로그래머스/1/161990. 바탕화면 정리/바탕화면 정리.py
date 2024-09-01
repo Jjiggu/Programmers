@@ -3,13 +3,16 @@ def solution(wallpaper):
     y_index = []
     x_index = []
     
-    # 최소, 최대 좌표 찾기
-    for index_y, word in enumerate(wallpaper):
-        for index_x, letter in enumerate(word):
-            if letter == "#":
-                y_index.append(index_y)
-                x_index.append(index_x)
+    for i in range(len(wallpaper)):
+        for j in range(len(wallpaper[i])):
+            if wallpaper[i][j] == "#":
+                x_index.append(j)
+                y_index.append(i)
+        
+        
+    answer.append(min(y_index))
+    answer.append(min(x_index))
+    answer.append(max(y_index) + 1)
+    answer.append(max(x_index) + 1)
     
-    
-    
-    return [min(y_index), min(x_index), max(y_index)+1, max(x_index)+1]
+    return answer
