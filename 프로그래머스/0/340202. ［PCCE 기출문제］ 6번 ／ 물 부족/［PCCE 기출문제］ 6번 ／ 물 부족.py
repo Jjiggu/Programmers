@@ -1,7 +1,7 @@
 def solution(storage, usage, change):
-    total_usage = 0
+    total_usage = usage
     for i in range(len(change)):
-        usage = usage * (100 + change[i])/100
+        usage = total_usage * change[i]/100
         total_usage += usage
         if total_usage > storage:
             return i
