@@ -10,7 +10,8 @@ def dfs(index, sum_arr):
 
     if index >= N:
         return
-
+    dfs(index + 1, sum_arr)
+    
     sum_arr += arr[index]
 
     if sum_arr == S:
@@ -18,7 +19,7 @@ def dfs(index, sum_arr):
 
     dfs(index + 1, sum_arr)
 
-    dfs(index + 1, sum_arr - arr[index])
+    # dfs(index + 1, sum_arr - arr[index])
 
 dfs(0, 0)
 
