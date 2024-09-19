@@ -1,10 +1,10 @@
 # [level 1] 자릿수 더하기 - 12931 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12931) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12931?language=java) 
 
 ### 성능 요약
 
-메모리: 10.3 MB, 시간: 0.02 ms
+메모리: 78.7 MB, 시간: 0.19 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 08월 02일 23:10:51
+2024년 09월 19일 23:56:59
 
 ### 문제 설명
 
