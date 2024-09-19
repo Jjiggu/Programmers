@@ -2,10 +2,12 @@ import java.util.Arrays;
 
 class Solution {
     public double solution(int[] arr) {
-        double answer = 0;
+        double avg = 0;
         
-        // double sum = Arrays.stream(arr).average().orElse(0);
+        for (int num : arr) {
+            avg += num;
+        }      
         
-        return Arrays.stream(arr).average().orElse(0);
+        return avg / arr.length;
     }
 }
