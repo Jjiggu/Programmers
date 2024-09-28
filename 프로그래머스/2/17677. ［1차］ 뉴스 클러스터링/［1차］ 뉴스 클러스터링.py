@@ -35,8 +35,8 @@ def solution(str1, str2):
     
     if result_intersection == 0 and result_union == 0:
         return 65536
-    elif result_intersection == 0 and result_union != 0:
-        return 0
+    # elif result_intersection == 0 and result_union != 0:
+    #     return 0
     else:
         answer = int((result_intersection / result_union) * 65536)
     
