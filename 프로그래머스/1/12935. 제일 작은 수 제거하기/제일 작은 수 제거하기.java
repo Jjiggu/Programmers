@@ -3,16 +3,13 @@ import java.util.stream.Collectors;
 
 class Solution {
     public int[] solution(int[] arr) {
-
-        List<Integer> list = Arrays.stream(arr).boxed().collect(Collectors.toList());
         
-        Arrays.sort(arr);
+        if (arr.length == 1) {
+            return new int[]{-1};
+        }
         
-        list.remove(list.indexOf(arr[0]));
+        int min = Arrays.stream(arr).min().getAsInt();
         
-        if (list.size() <= 0) return new int[]{-1};
-        
-        return list.stream().mapToInt(i->i).toArray();
-        
+        return Arrays.stream(arr).filter(i -> i != min).toArray();
     }
 }
