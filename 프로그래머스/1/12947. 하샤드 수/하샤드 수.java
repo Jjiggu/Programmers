@@ -2,7 +2,7 @@ class Solution {
     public boolean solution(int x) {
         
         String[] hashadnum = String.valueOf(x).split("");
-        long sum = 0;
+        int sum = 0;
         
         for(String num:hashadnum) {
             sum += Integer.parseInt(num);
@@ -13,6 +13,6 @@ class Solution {
         } else {
             return false;
         }
-        
+         
     }
 }
