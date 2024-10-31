@@ -1,39 +1,36 @@
 from collections import deque
 
-def bfs(start_x, start_y, end_x, end_y, graph):
+def bfs(start, end, maps):
     dx = [-1, 1, 0, 0]
     dy = [0, 0, -1, 1]
-    n, m = len(graph), len(graph[0])
+    n, m = len(maps), len(maps[0])
     
-    visited = set([(start_x, start_y)])
-    queue = deque([(start_x, start_y, 1)])
+    visited = [[False] * len(maps[0]) for _ in maps]
     
-    while queue:
-        x, y, dist = queue.popleft()
+    q = deque()
+    q.append((start[0], start[1], 1))  # 시작 좌표와 거리(1)
+    
+    while q:
+        x, y, dist = q.popleft()
         
-        if x == end_x and y == end_y:
+        if (x, y) == end:
             return dist
         
         for i in range(4):
             nx = x + dx[i]
-            ny = y + dy[i]
+            ny = y + dy[i]    
             
             if 0 <= nx < n and 0 <= ny < m:
-                if (nx, ny) not in visited:
-                    if graph[nx][ny] == 1:
-                        visited.add((nx, ny))
-                        queue.append((nx, ny, dist + 1))
-        
-    return -1
-
+                if not visited[nx][ny] and maps[nx][ny] == 1:
+                    q.append((nx, ny, dist + 1))
+                    visited[nx][ny] = True
+    
+    return -1  # 도착 지점에 도달할 수 없는 경우
 
 def solution(maps):
-    maps_w = len(maps)
-    maps_h = len(maps[0])
+    maps_n = len(maps)
+    maps_m = len(maps[0])
     
-    result = bfs(0, 0, maps_w - 1, maps_h - 1, maps)
+    answer = bfs((0, 0), (maps_n - 1, maps_m - 1), maps)
     
-    print(result)
-    
-    return result
-
+    return answer
