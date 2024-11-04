@@ -1,5 +1,5 @@
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 class Solution {
     public String solution(String[] survey, int[] choices) {
@@ -20,12 +20,12 @@ class Solution {
             
             if (num > 4) {
                 String key = String.valueOf(mbti.charAt(1));
-                score.put(key, score.get(key) + (num % 4)); 
+                score.put(key, score.get(key) + (num % 4));
             }
             
             if (num < 4) {
                 String key = String.valueOf(mbti.charAt(0));
-                score.put(key, score.get(key) + (4 - num)); 
+                score.put(key, score.get(key) + (4 - num));
             }
         }
         
@@ -39,6 +39,5 @@ class Solution {
         String answer = sb.toString();
         
         return answer;
-        
     }
 }
