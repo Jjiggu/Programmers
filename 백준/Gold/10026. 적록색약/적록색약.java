@@ -56,14 +56,14 @@ public class Main {
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (mapNormal[i][j] == 'R' || mapNormal[i][j] == 'G' || mapNormal[i][j] == 'B') {
+//                if (mapNormal[i][j] == 'R' || mapNormal[i][j] == 'G' || mapNormal[i][j] == 'B') {
                     if (!visitedNormal[i][j]) {
                         visitedNormal[i][j] = true;
                         normalQ.add(new int[]{i, j});
                         bfsNormal(normalQ, mapNormal[i][j]);
                         result += 1;
                     }
-                }
+//                }
             }
         }
 
