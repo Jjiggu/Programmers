@@ -75,14 +75,14 @@ public class Main {
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (mapBlind[i][j] == 'R' || mapBlind[i][j] == 'B') {
+//                if (mapBlind[i][j] == 'R' || mapBlind[i][j] == 'B') {
                     if (!visitedBlind[i][j]) {
                         visitedBlind[i][j] = true;
                         colorBlindnessQ.add(new int[]{i, j});
                         bfsBlind(colorBlindnessQ, mapBlind[i][j]);
                         result += 1;
                     }
-                }
+//                }
             }
         }
 
