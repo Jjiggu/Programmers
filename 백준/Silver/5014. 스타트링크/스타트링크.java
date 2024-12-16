@@ -7,8 +7,7 @@ import java.util.LinkedList;
 public class Main {
     static int F, S, G, U, D;
     static int result = 0;
-    static int[] maps;
-    static boolean[] visited;
+    static int[] dist;
     static Queue<Integer> q;
     static int[] moves;
 
@@ -23,17 +22,12 @@ public class Main {
         U = Integer.parseInt(st.nextToken());
         D = Integer.parseInt(st.nextToken());
 
-        maps = new int[F + 1];
-        visited = new boolean[F + 1];
-
-        for (int i = 0; i < F + 1; i++) {
-            maps[i] = i;
-        }
+        dist = new int[F + 1];
 
         q = new LinkedList<>();
 
         q.add(S);
-        visited[S] = true;
+        dist[S] = 1;
         result = bfs(q);
 
         if (result != -1) {
@@ -45,31 +39,24 @@ public class Main {
 
 
     public static int bfs(Queue<Integer> q) {
-        int cnt = 0;
-
         while (!q.isEmpty()) {
-            int size = q.size();
+            int current = q.poll();
+            int x = current;
 
-            for (int i = 0; i < size; i++) {
-                int current = q.poll();
-                int x = current;
+            if (x == G) {
+                return dist[x] - 1;
+            }
 
-                if (x == G) {
-                    return cnt;
-                }
+            moves = new int[]{U, - D};
 
-                moves = new int[]{U, - D};
+            for (int move : moves) {
+                int nx = x + move;
 
-                for (int move : moves) {
-                    int nx = x + move;
-
-                    if (nx >= 1 && nx < F + 1 && !visited[nx]) {
-                        q.add(nx);
-                        visited[nx] = true;
-                    }
+                if (nx >= 1 && nx < F + 1 && dist[nx] == 0) {
+                    q.add(nx);
+                    dist[nx] = dist[x] + 1;
                 }
             }
-            cnt++;
         }
         return -1;
     }
