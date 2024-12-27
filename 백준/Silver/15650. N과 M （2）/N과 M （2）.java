@@ -2,14 +2,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-
 public class Main {
-    static int result;
     static int N, M;
     static int[] arr;
     static boolean[] isUsed;
-    static int MAX = 10;
-
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,10 +14,11 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        arr = new int[MAX];
-        isUsed = new boolean[MAX];
+        arr = new int[M + 1];
+        isUsed = new boolean[N + 1];
 
         back(0, 0);
+
     }
 
 
@@ -34,15 +31,10 @@ public class Main {
             return;
         }
 
-        for (int i = k + 1; i <= N; i++) {
-            if (!isUsed[i] && i > num) {
-                arr[k] = i;
-                isUsed[i] = true;
-                num = i;
-                back(k + 1, num);
-                isUsed[i] = false;
-            }
+        for (int i = num + 1; i <= N; i++) {
+            arr[k] = i;
+            num = i;
+            back(k + 1, num);
         }
     }
 }
-
