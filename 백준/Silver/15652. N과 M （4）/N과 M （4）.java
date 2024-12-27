@@ -2,12 +2,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-
 public class Main {
     static int N, M;
     static int[] arr;
-    static int MAX = 10;
-
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,26 +14,28 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        arr = new int[MAX];
+        arr = new int[M + 1];
 
-        back(0, 1);
+        back(0, 0);
+
+        System.out.print(sb.toString());
     }
 
 
-    public static void back(int k, int nowNum) {
+    public static void back(int k, int preNum) {
         if (k == M) {
             for (int i = 0; i < M; i++) {
-                System.out.print(arr[i] + " ");
+                sb.append(arr[i]).append(' ');
             }
-            System.out.print("\n");
+            sb.append("\n");
             return;
         }
 
-        for (int i = nowNum; i <= N; i++) {
-            if (nowNum <= i) {
+        for (int i = 1; i <= N; i++) {
+            if (i >= preNum) {
                 arr[k] = i;
-                nowNum = i;
-                back(k + 1, nowNum);
+                preNum = i;
+                back(k + 1, preNum);
             }
         }
     }
