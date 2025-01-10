@@ -24,20 +24,19 @@ public class Main {
             }
         }
 
-        back(0, 0,0, 0);
+        back(0, 0,0);
 
         System.out.print(result);
 
     }
 
-    public static void back(int k, int lastIdx, int sCnt, int yCnt) {
-        if (k == 7) {
-            if (sCnt >= 4) {
-                int startX = (lastIdx - 1) / 5;
-                int startY = (lastIdx - 1) % 5;
-                if (check(startX, startY)) {
-                    result++;
-                }
+    public static void back(int k, int lastIdx, int sCnt) {
+        if (k == 7 && sCnt >= 4) {
+            int startX = (lastIdx - 1) / 5;
+            int startY = (lastIdx - 1) % 5;
+
+            if (isConnected(startX, startY)) {
+                result++;
             }
         }
 
@@ -47,22 +46,25 @@ public class Main {
 
             if (!visited[x][y]) {
                 visited[x][y] = true;
-                if (maps[x][y] == 'Y') {
-                     back(k + 1, i + 1, sCnt, yCnt + 1);
+
+                if (maps[x][y] == 'S') {
+                    back(k + 1, i + 1, sCnt + 1);
                 } else {
-                    back(k + 1, i + 1, sCnt + 1, yCnt);
+                    back(k + 1, i + 1, sCnt);
                 }
+
                 visited[x][y] = false;
             }
         }
     }
 
-    static boolean check(int startX, int startY) {
+    static boolean isConnected(int startX, int startY) {
         int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
         boolean[][] checkVisited = new boolean[5][5];
 
         Queue<int[]> q = new LinkedList<>();
+
         q.add(new int[]{startX, startY});
         checkVisited[startX][startY] = true;
 
@@ -74,8 +76,8 @@ public class Main {
             int y = now[1];
 
             for (int i = 0; i < 4; i++) {
-                int nx = x - dx[i];
-                int ny = y - dy[i];
+                int nx = x + dx[i];
+                int ny = y + dy[i];
 
                 if (nx >= 0 && ny >= 0 && nx < 5 && ny < 5) {
                     if (visited[nx][ny] && !checkVisited[nx][ny]) {
@@ -86,7 +88,6 @@ public class Main {
                 }
             }
         }
-
         return connectCnt == 7;
     }
 }
