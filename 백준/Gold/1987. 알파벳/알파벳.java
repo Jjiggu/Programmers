@@ -8,7 +8,6 @@ public class Main {
     static char[][] maps;
     static int[][] visited;
     static boolean[] isUsed;
-    static int[] alphaList;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
 
@@ -20,7 +19,6 @@ public class Main {
         R = Integer.parseInt(st.nextToken());
         C = Integer.parseInt(st.nextToken());
 
-        alphaList = new int[26];
         isUsed = new boolean[26];
         maps = new char[R][C];
         visited = new int[R][C];
@@ -48,7 +46,7 @@ public class Main {
             int ny = y + dy[i];
 
             if (nx >= 0 && ny >= 0 && nx < R && ny < C) {
-                if (visited[nx][ny] == 0 && !isUsed[maps[nx][ny] - 'A']) {
+                if (!isUsed[maps[nx][ny] - 'A']) {
                     isUsed[maps[nx][ny] - 'A'] = true;
                     visited[nx][ny] = visited[x][y] + 1;
                     dfs(nx, ny);
