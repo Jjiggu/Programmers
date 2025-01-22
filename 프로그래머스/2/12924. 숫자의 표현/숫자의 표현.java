@@ -7,13 +7,14 @@ class Solution {
         return cnt;
     }
     
+    
     public void dfs(int start, int target) {
         int result = 0;
         
-        if (start == target) {
-            cnt++;
-            return;
-        }
+        // if (start == target) {
+        //     cnt++;
+        //     return;
+        // }
         
         for (int i = start; i <= target; i++) {
             result += i;
