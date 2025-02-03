@@ -3,21 +3,17 @@ import java.io.InputStreamReader;
 
 public class Main {
     static String word1, word2;
-    static int maxX, maxY;
     static int[][] dp;
-    static StringBuilder sb = new StringBuilder();
 
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
 
         word1 = br.readLine();
         word2 = br.readLine();
 
-        maxX = word1.length() + 1;
-        maxY = word2.length() + 1;
-
-        dp = new int[maxX][maxY];
+        dp = new int[word1.length() + 1][word2.length() + 1];
 
         for (int i = 1; i <= word1.length(); i++) {
             for (int j = 1; j <= word2.length(); j++) {
@@ -31,25 +27,18 @@ public class Main {
 
         System.out.println(findMax(dp));
         findLCS(dp, word1.length(), word2.length(), sb);
-        System.out.print(sb.reverse().toString());
+        System.out.print(sb.reverse());
     }
 
+    
     public static int findMax(int[][] dp) {
-//        int maxNum = -1;
-//
-//        for (int i = 1; i < dp.length; i++) {
-//            for (int j = 1; j < dp[0].length; j++) {
-//                if (dp[i][j] > maxNum) maxNum = dp[i][j];
-//            }
-//        }
-//
-//        return maxNum;
         return dp[word1.length()][word2.length()];
     }
 
+    
     public static void findLCS(int[][] dp, int startX, int startY, StringBuilder sb) {
 
-        if (dp[startX][startY] == 0 || startX == 0 || startY == 0) {
+        if (dp[startX][startY] == 0) {
             return;
         }
 
