@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        N = Integer.parseInt(br.readLine());  // 배열 크기 입력
+        N = Integer.parseInt(br.readLine());
         arr = new int[N];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -19,18 +19,20 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(arr);  // 이진 탐색을 위해 정렬
+        Arrays.sort(arr);
 
-        M = Integer.parseInt(br.readLine());  // 찾을 숫자의 개수 입력
+        M = Integer.parseInt(br.readLine());
+
         st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < M; i++) {  // ✅ `M`으로 수정
+        for (int i = 0; i < M; i++) {
             int key = Integer.parseInt(st.nextToken());
+
             sb.append(upperBound(arr, key) - lowerBound(arr, key)).append(' ');
         }
 
-        System.out.println(sb);
+        System.out.print(sb);
     }
 
     public static int lowerBound(int[] arr, int key) {
