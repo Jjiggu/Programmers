@@ -3,40 +3,34 @@ import java.util.*;
 class Solution {
     public int[] solution(String[] operations) throws Exception{
         
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        PriorityQueue<Integer> minPq = new PriorityQueue<>();
+        PriorityQueue<Integer> maxPq = new PriorityQueue<>(Collections.reverseOrder());
         
-        for (int i = 0; i < operations.length; i++) {
-            StringTokenizer st = new StringTokenizer(operations[i]);
-            
+        for (String operation : operations) {
+            StringTokenizer st = new StringTokenizer(operation);
             char command = st.nextToken().charAt(0);
             int num = Integer.parseInt(st.nextToken());
             
             if (command == 'I') {
-                pq.add(num);
+                minPq.add(num);
+                maxPq.add(num);
             } else {
-                if (!pq.isEmpty()) {
+                if (!minPq.isEmpty() && !maxPq.isEmpty()) {
                     if (num == 1) {
-                        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
-                        maxHeap.addAll(pq);
-                        maxHeap.poll();
-                        pq.clear();
-                        pq.addAll(maxHeap);
+                        int maxNum = maxPq.poll();
+                        minPq.remove(maxNum);
                     } else {
-                        pq.poll();
-                    }    
+                        int minNum = minPq.poll();
+                        maxPq.remove(minNum);
+                    }
                 }
-                
             }
-            
         }
         
-        if (pq.isEmpty()) {
+        if (minPq.isEmpty() && maxPq.isEmpty()) {
             return new int[] {0, 0};
-        }
+        } 
         
-        int min = Collections.min(pq);
-        int max = Collections.max(pq);
-        
-        return new int[] {max, min};
+        return new int[] {maxPq.poll(), minPq.poll()};
     }
 }
