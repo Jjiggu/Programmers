@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Solution {
     public int[] solution(int n, int s) {
-        if (n > s) return new int[] { -1 }; // 불가능한 경우
+        if (n > s) return new int[] {-1}; 
 
         int[] answer = new int[n];
         int quotient = s / n;
@@ -11,7 +11,7 @@ public class Solution {
         Arrays.fill(answer, quotient);
 
         for (int i = 0; i < remainder; i++) {
-            answer[n - 1 - i] += 1;
+            answer[n - i - 1] += 1;
         }
 
         return answer;
