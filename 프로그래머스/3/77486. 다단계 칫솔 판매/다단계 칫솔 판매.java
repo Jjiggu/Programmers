@@ -16,9 +16,6 @@ class Solution {
             String curr = seller[i];
             int sell = amount[i] * 100;
             
-            int refRev = sell / 10;
-            int myRev = sell * 90 / 100;;
-            
             while (!curr.equals("-") && sell > 0) {
                 int ref = sell / 10;
                 int keep = sell - ref;
