@@ -24,9 +24,6 @@ class Solution {
         
         for (int i = 1; i <= n; i++) {
             graph[i] = new ArrayList<>();
-            distFromS[i] = Integer.MAX_VALUE;
-            distFromA[i] = Integer.MAX_VALUE;
-            distFromB[i] = Integer.MAX_VALUE;
         }
         
         for (int[] fare : fares) {
@@ -34,9 +31,9 @@ class Solution {
             graph[fare[1]].add(new Node(fare[0], fare[2]));
         }
         
-        dijkstra(s, distFromS, new boolean[n + 1]);
-        dijkstra(a, distFromA, new boolean[n + 1]);
-        dijkstra(b, distFromB, new boolean[n + 1]);
+        dijkstra(s, distFromS);
+        dijkstra(a, distFromA);
+        dijkstra(b, distFromB);
         
         
         int minCost = Integer.MAX_VALUE;
@@ -50,23 +47,24 @@ class Solution {
     }
     
     
-    private int[] dijkstra(int start, int[] dist, boolean[] visited) {
+    private int[] dijkstra(int start, int[] dist) {
         PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
+        Arrays.fill(dist, Integer.MAX_VALUE);
         
-        pq.add(new Node(start, 0));
+        pq.offer(new Node(start, 0));
         dist[start] = 0;
         
         while(!pq.isEmpty()) {
             Node now = pq.poll();
             
-            if (!visited[now.v]) {
-                visited[now.v] = true;
-            }
+            if (dist[now.v] < now.cost) continue;
             
             for (Node next : graph[now.v]){
-                if (!visited[next.v] && dist[next.v] > now.cost + next.cost) {
-                    dist[next.v] = now.cost + next.cost;
-                    pq.add(new Node(next.v, dist[next.v]));
+                int nextCost = dist[now.v] + next.cost;
+                
+                if (dist[next.v] > nextCost) {
+                    dist[next.v] = nextCost;
+                    pq.offer(new Node(next.v, nextCost));
                 }
             }
         }
