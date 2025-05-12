@@ -7,20 +7,21 @@ class Solution {
         
         for (int i = 0; i < n; i++) {
             if (!visited[i]) {
+                visited[i] = true;
                 bfs(computers, i, visited);
-                result++;   
+                result++;
             }
         }
         
         return result;
     }
     
-    public void bfs(int[][] computers, int nowNum, boolean[] visited) {
+    
+    private void bfs(int[][] computers, int startNum, boolean[] visited) {
         Queue<Integer> q = new LinkedList<>();
-        q.add(nowNum);
-        visited[nowNum] = true;
+        q.add(startNum);
         
-        while (!q.isEmpty()) {
+        while(!q.isEmpty()) {
             int num = q.poll();
             
             for (int i = 0; i < computers.length; i++) {
@@ -32,5 +33,6 @@ class Solution {
                 }
             }
         }
+        
     }
 }
