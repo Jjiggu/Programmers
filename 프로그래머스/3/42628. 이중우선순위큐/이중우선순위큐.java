@@ -2,7 +2,6 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] operations) throws Exception{
-        
         PriorityQueue<Integer> minPq = new PriorityQueue<>();
         PriorityQueue<Integer> maxPq = new PriorityQueue<>(Collections.reverseOrder());
         
@@ -28,9 +27,9 @@ class Solution {
         }
         
         if (minPq.isEmpty() && maxPq.isEmpty()) {
-            return new int[] {0, 0};
-        } 
+            return new int[]{0, 0};   
+        }
         
-        return new int[] {maxPq.poll(), minPq.poll()};
+        return new int[]{maxPq.poll(), minPq.poll()};
     }
 }
