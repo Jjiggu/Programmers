@@ -6,7 +6,7 @@ class Solution {
     public long solution(int n, int[] works) {
         pq = new PriorityQueue<>(Collections.reverseOrder());
         
-        for (int work : works) pq.add(work);
+        for (int work : works) pq.offer(work);
         
         doOvertime(n);
         
@@ -16,12 +16,11 @@ class Solution {
     
     public void doOvertime(int n) {
         
-        for (int i = 0; i < n; i++) {
-            int nowNum = pq.poll();
-            nowNum--;
+        while (n > 0) {
+            int num = pq.poll();
             
-            if (nowNum > 0) pq.offer(nowNum);
-            else pq.offer(0);
+            pq.offer(num > 0 ? num - 1 : num);
+            n--;
         }
     }
     
