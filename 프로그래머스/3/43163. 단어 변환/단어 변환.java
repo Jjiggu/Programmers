@@ -4,35 +4,36 @@ class Solution {
     public int solution(String begin, String target, String[] words) {
         
         boolean[] isUsed = new boolean[words.length];
+        Arrays.sort(words);
         
-        int result = dfs(0, begin, target, isUsed, words);
-        
-        return result == Integer.MAX_VALUE ? 0 : result;
+        return bfs(begin, target, words, isUsed, 0);   
     }
     
     
-    public int dfs(int k, String nowWord, String target, boolean[] isUsed, String[] words) {
+    public int bfs(String begin, String target, String[] words, boolean[] isUsed, int cnt) {
+        Queue<String> q = new LinkedList<>();
+        q.offer(begin);
         
-        if (nowWord.equals(target)) {
-            return k;
-        }
-        
-        int min = Integer.MAX_VALUE;
-        
-        for (int i = 0; i < words.length; i++) {
-            if (!isUsed[i] && isMatched(nowWord, words[i])) {
-                isUsed[i] = true;
-                int val = dfs(k + 1, words[i], target, isUsed, words);
-                
-                if (val < min) {
-                    min = val;
+        while(!q.isEmpty()) {
+            String nowWord = q.poll();
+            
+            if (nowWord.equals(target)) {
+                return cnt;
+            }
+            
+            
+            for (int i = 0; i < words.length; i++) {
+                if (!isUsed[i] && isMatched(nowWord, words[i])) {
+                    System.out.println(words[i]);
+                    q.offer(words[i]);
+                    isUsed[i] = true;
+                    cnt++;
+                    break;
                 }
-                
-                isUsed[i] = false;
             }
         }
         
-        return min;
+        return 0;
     }
     
     
