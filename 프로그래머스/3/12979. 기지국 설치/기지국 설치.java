@@ -1,28 +1,28 @@
 class Solution {
     public int solution(int n, int[] stations, int w) {
         int answer = 0;
-        int begin = 1;
+        int left = 1;
         
         for(int i = 0; i < stations.length; i++) {
-            if(begin < stations[i] - w) {
-                answer += bsearch(begin, stations[i] - w - 1, w);   
+            if(left < stations[i] - w) {
+                answer += countStationsNeeded(left, stations[i] - w - 1, w);   
             }
             
-            begin = stations[i] + w + 1;
+            left = stations[i] + w + 1;
         }
         
         if(stations[stations.length - 1] + w < n) {
-            answer += bsearch(stations[stations.length - 1] + w + 1, n, w);
+            answer += countStationsNeeded(stations[stations.length - 1] + w + 1, n, w);
         }
 
         return answer;
     }
     
     
-    public int bsearch(int begin, int end, int w) {
-        int res = (end - begin + 1) / (2 * w + 1);
+    public int countStationsNeeded(int left, int right, int w) {
+        int res = (right - left + 1) / (2 * w + 1);
         
-        if((end - begin + 1) % (2 * w + 1) > 0) res++;
+        if((right - left + 1) % (2 * w + 1) > 0) res++;
         
         return res;
     }
