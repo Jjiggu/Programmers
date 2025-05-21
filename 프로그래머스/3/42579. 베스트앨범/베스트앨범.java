@@ -23,14 +23,14 @@ class Solution {
         }
         
         List<String> keySetList = new ArrayList<>(allPlays.keySet());
-        keySetList.sort((o1, o2) -> allPlays.get(o2).compareTo(allPlays.get(o1)));
+        keySetList.sort((o1, o2) -> allPlays.get(o2) - allPlays.get(o1));
         
         
         for (String s : keySetList) {
             Map<Integer, Integer> maps = sortedGenres.get(s);
             List<Integer> idxList = new ArrayList<>(maps.keySet());
             
-            idxList.sort((o1, o2) -> maps.get(o2).compareTo(maps.get(o1)));
+            idxList.sort((o1, o2) -> maps.get(o2) - maps.get(o1));
             
             if (idxList.size() <= 1) {
                 answer.add(idxList.get(0));
