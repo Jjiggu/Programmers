@@ -1,10 +1,10 @@
 class Solution {
     public int solution(int[] stones, int k) {
-        int left = 1;
         int right = 200_000_000;
+        int left = 0;
         int answer = 0;
         
-        while(left <= right) {
+        while (left <= right) {
             int mid = (left + right) / 2;
             
             if (canCross(stones, k, mid)) {
@@ -16,18 +16,18 @@ class Solution {
         }
         
         return answer;
+        
     }
     
     
-    private boolean canCross(int[] stones, int k, int mid) {
+    public boolean canCross(int[] stones, int k, int mid) {
         int skip = 0;
         
         for (int stone : stones) {
             if (stone < mid) {
                 skip++;
-                
                 if (skip >= k) {
-                    return false;
+                    return false;   
                 }
             } else {
                 skip = 0;
@@ -35,5 +35,5 @@ class Solution {
         }
         
         return true;
-    }
+     }
 }
