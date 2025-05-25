@@ -1,39 +1,38 @@
 import java.util.*;
 
-class Solution {  
-    static boolean[] visited;
-    static List<String> answer = new ArrayList<>();
-    
+class Solution {
     public String[] solution(String[][] tickets) {
-        Arrays.sort(tickets, (a, b) -> a[1].compareTo(b[1]));
-        visited = new boolean[tickets.length + 1];
+        Arrays.sort(tickets, (o1, o2) -> o1[1].compareTo(o2[1]));
+        boolean[] visited = new boolean[tickets.length];
         
         List<String> path = new ArrayList<>();
         path.add("ICN");
+
+        List<String> result = dfs("ICN", tickets, path, visited);
         
-        dfs(0, "ICN", tickets, path);
-        
-        return answer.toArray(new String[0]);
+        return result.toArray(new String[0]);
     }
+
     
-    private void dfs(int k, String current, String[][] tickets, List<String> path) {
-        if (k == tickets.length) {
-            answer = new ArrayList<>(path);
-            return;
+    public List<String> dfs(String cur, String[][] tickets, List<String> path, boolean[] visited) {
+        if (path.size() == tickets.length + 1) {
+            return new ArrayList<>(path);
         }
-        
-        for (int i = 0; i < tickets.length; i++){
-            if (!visited[i] && tickets[i][0].equals(current)) {
+
+        for (int i = 0; i < tickets.length; i++) {
+            if (!visited[i] && tickets[i][0].equals(cur)) {
                 visited[i] = true;
                 path.add(tickets[i][1]);
                 
-                dfs(k + 1, tickets[i][1], tickets, path);
+                List<String> result = dfs(tickets[i][1], tickets, path, visited);
                 
-                if (!answer.isEmpty()) return;
+                if (result != null) return result;
                 
-                visited[i] = false;
                 path.remove(path.size() - 1);
+                visited[i] = false;
             }
         }
+
+        return null;
     }
 }
