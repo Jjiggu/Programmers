@@ -1,65 +1,55 @@
 import java.util.*;
 
 class Solution {
-    static class Node {
-        int v;
-        int cost;
-        
-        public Node(int v, int cost) {
-            this.v = v;
-            this.cost = cost;
-        }
-    }
-    
-    static ArrayList<Node>[] graph;
-    
     public int[] solution(int n, int[][] roads, int[] sources, int destination) {
+        List<List<Integer>> graph = buildGraph(n, roads);
         int[] answer = new int[sources.length];
-        graph = new ArrayList[n + 1];
         
-        for (int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
-        }
-        
-        for (int[] road : roads) {
-            graph[road[0]].add(new Node(road[1], 1));
-            graph[road[1]].add(new Node(road[0], 1));
-        }
-        
-        
-        int[] dist = dijkstra(n, destination);
-
         for (int i = 0; i < sources.length; i++) {
-            int source = sources[i];
-            answer[i] = dist[source] == Integer.MAX_VALUE ? -1 : dist[source];
+            answer[i] = bfs(sources[i], n, graph, destination);
         }
         
         return answer;
+    }    
+    
+    
+    private List<List<Integer>> buildGraph(int n, int[][] roads) {
+        List<List<Integer>> graph = new ArrayList<>();
+        
+        for (int i = 0; i <= n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        
+        for (int[] r : roads) {
+            graph.get(r[0]).add(r[1]);
+            graph.get(r[1]).add(r[0]);
+        }
+        
+        return graph;
     }
     
     
-    private int[] dijkstra(int n, int start) {
-        
+    private int bfs(int start, int n, List<List<Integer>> graph, int destination) {
         int[] dist = new int[n + 1];
-        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
+        Deque<Integer> q = new ArrayDeque<>();
         
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        pq.add(new Node(start, 0));
+        Arrays.fill(dist, -1);
+        q.add(start);
         dist[start] = 0;
         
-        while(!pq.isEmpty()) {
-            Node now = pq.poll();
+        while(!q.isEmpty()) {
+            int cur = q.poll();
             
-            if (dist[now.v] < now.cost) continue;
+            if (cur == destination) return dist[cur];
             
-            for (Node next : graph[now.v]) {
-                if (dist[next.v] > now.cost + next.cost) {
-                    dist[next.v] = now.cost + next.cost;
-                    pq.add(new Node(next.v, dist[next.v]));
+            for (int next : graph.get(cur)) {
+                if (dist[next] == -1) {
+                    dist[next] = dist[cur] + 1;
+                    q.add(next);
                 }
-            } 
+            }
         }
         
-        return dist;
-    }    
+        return -1;
+    }
 }
