@@ -1,70 +1,65 @@
 import java.util.*;
 
 class Solution {
-    
-    static class Node{
-        int v;
-        int cost;
+    public int solution(int n, int[][] edge) {
+        List<List<Integer>> graph = buildGraph(n, edge);
+        int[] dist = bfs(1, n, graph);
         
-        public Node(int v, int cost) {
-            this.v = v;
-            this.cost = cost;
-        }
+        return countMax(dist);
     }
     
-    static ArrayList<Node>[] graph;
-    static boolean[] visited;
-    static int[] dist;
     
-    public int solution(int n, int[][] edge) {
-        graph = new ArrayList[n + 1];
-        visited = new boolean[n + 1];
-        dist = new int[n + 1];
+    private List<List<Integer>> buildGraph(int n, int[][] edge) {
+        List<List<Integer>> graph = new ArrayList<>();
         
-        for (int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
-            dist[i] = Integer.MAX_VALUE;
+        for (int i = 0; i <= n; i++) {
+            graph.add(new ArrayList<>());
         }
         
         for (int[] e : edge) {
-            graph[e[0]].add(new Node(e[1], 1));
-            graph[e[1]].add(new Node(e[0], 1));
+            graph.get(e[0]).add(e[1]);
+            graph.get(e[1]).add(e[0]);
         }
         
-        dijkstra(1);
-        
-        int maxNum = Arrays.stream(dist)
-                           .filter(d -> d != Integer.MAX_VALUE)
-                           .max()
-                           .getAsInt();
-        
-        int result = (int) Arrays.stream(dist)
-                                 .filter(d -> d == maxNum)
-                                 .count();
-        
-        return result;
-        
+        return graph;
     }
     
     
-    private void dijkstra(int start) {
-        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
-        pq.add(new Node(start, 0));
+    private int[] bfs(int start, int n, List<List<Integer>> graph) {
+        int[] dist = new int[n + 1];
+        Arrays.fill(dist, -1);
+        
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
         dist[start] = 0;
         
-        while(!pq.isEmpty()) {
-            Node now = pq.poll();
+        while(!q.isEmpty()) {
+            int cur = q.poll();
             
-            if (!visited[now.v]) {
-                visited[now.v] = true;
-            }
-            
-            for (Node next : graph[now.v]) {
-                if (!visited[next.v] && dist[next.v] > now.cost + next.cost) {
-                    dist[next.v] = now.cost + next.cost;
-                    pq.add(new Node(next.v, dist[next.v]));
+            for (int next : graph.get(cur)) {
+                if (dist[next] == -1) {
+                    dist[next] = dist[cur] + 1;
+                    q.add(next);
                 }
-            } 
+            }
         }
+        
+        return dist;
+    }
+    
+    
+    private int countMax(int[] dist) {
+        int max = 0;
+        
+        for (int d : dist) {
+            if (d > max) max = d;
+        }
+        
+        int cnt = 0;
+        for (int d : dist) {
+            if (d == max) cnt++;
+        }
+        
+        return cnt;
     }
 }
