@@ -1,154 +1,144 @@
 import java.util.*;
 
-class Solution {
-    
+public class Solution {
+
     private static final int SIZE = 50 * 50;
-    
-    private int[] parent;
-    private Map<Integer, String> valueMap;
-    private Map<Integer, Set<Integer>> members;
-    
+
+    private final int[] parent = new int[SIZE];
+    private final Map<Integer, String> valueMap = new HashMap<>();
+    private final Map<Integer, Set<Integer>> members = new HashMap<>();
+
     public String[] solution(String[] commands) {
-        parent   = new int[SIZE];
-        valueMap = new HashMap<>();
-        members  = new HashMap<>();
-        
         for (int i = 0; i < SIZE; i++) {
             parent[i] = i;
             valueMap.put(i, "EMPTY");
-            members.put(i, new HashSet<>(Arrays.asList(i)));
+            members.put(i, new HashSet<>(Collections.singleton(i)));
         }
-        
-        List<String> result = new ArrayList<>();
-        
+
+        List<String> output = new ArrayList<>();
+
         for (String cmd : commands) {
-            String[] p = cmd.split(" ");
-            switch (p[0]) {
+            String[] tokens = cmd.split(" ");
+            String command = tokens[0];
+
+            switch (command) {
                 case "UPDATE":
-                    if (p.length == 4) {
-                        handleUpdateCell(
-                            Integer.parseInt(p[1]),
-                            Integer.parseInt(p[2]),
-                            p[3]
+                    if (tokens.length == 4) {
+                        updateCell(
+                            Integer.parseInt(tokens[1]),
+                            Integer.parseInt(tokens[2]),
+                            tokens[3]
                         );
                     } else {
-                        handleUpdateValue(p[1], p[2]);
+                        updateValue(tokens[1], tokens[2]);
                     }
                     break;
-                    
+
                 case "MERGE":
-                    handleMerge(
-                        Integer.parseInt(p[1]),
-                        Integer.parseInt(p[2]),
-                        Integer.parseInt(p[3]),
-                        Integer.parseInt(p[4])
+                    mergeCells(
+                        Integer.parseInt(tokens[1]),
+                        Integer.parseInt(tokens[2]),
+                        Integer.parseInt(tokens[3]),
+                        Integer.parseInt(tokens[4])
                     );
                     break;
-                    
+
                 case "UNMERGE":
-                    handleUnmerge(
-                        Integer.parseInt(p[1]),
-                        Integer.parseInt(p[2])
+                    unmergeCell(
+                        Integer.parseInt(tokens[1]),
+                        Integer.parseInt(tokens[2])
                     );
                     break;
-                    
+
                 case "PRINT":
-                    handlePrint(
-                        Integer.parseInt(p[1]),
-                        Integer.parseInt(p[2]),
-                        result
+                    printCell(
+                        Integer.parseInt(tokens[1]),
+                        Integer.parseInt(tokens[2]),
+                        output
                     );
                     break;
+
+                default:
             }
         }
-        
-        return result.toArray(new String[0]);
+
+        return output.toArray(new String[0]);
     }
-    
-    
-    private int toId(int r, int c) {
-        return (r - 1) * 50 + (c - 1);
+
+    private int toId(int row, int col) {
+        return (row - 1) * 50 + (col - 1);
     }
-    
-    
+
     private int find(int x) {
         if (parent[x] != x) {
             parent[x] = find(parent[x]);
         }
         return parent[x];
     }
-    
-    
-    private void handleUpdateCell(int r, int c, String value) {
-        int id   = toId(r, c);
+
+    private void updateCell(int row, int col, String value) {
+        int id = toId(row, col);
         int root = find(id);
         valueMap.put(root, value);
     }
-    
-    
-    private void handleUpdateValue(String val1, String val2) {
-        for (Map.Entry<Integer, String> e : valueMap.entrySet()) {
-            if (e.getValue().equals(val1)) {
-                e.setValue(val2);
+
+    private void updateValue(String oldValue, String newValue) {
+        for (Map.Entry<Integer, String> entry : valueMap.entrySet()) {
+            if (entry.getValue().equals(oldValue)) {
+                entry.setValue(newValue);
             }
         }
     }
-    
-    
-    private void handleMerge(int r1, int c1, int r2, int c2) {
-        int id1   = toId(r1, c1);
-        int id2   = toId(r2, c2);
+
+    private void mergeCells(int r1, int c1, int r2, int c2) {
+        int id1 = toId(r1, c1);
+        int id2 = toId(r2, c2);
         int root1 = find(id1);
         int root2 = find(id2);
-        if (root1 == root2) return;
-        
-        String val1 = valueMap.getOrDefault(root1, "EMPTY");
-        String val2 = valueMap.getOrDefault(root2, "EMPTY");
-        
-        
-        for (int m : members.get(root2)) {
-            parent[m] = root1;
-            members.get(root1).add(m);
+
+        if (root1 == root2) {
+            return;
+        }
+
+        String value1 = valueMap.getOrDefault(root1, "EMPTY");
+        String value2 = valueMap.getOrDefault(root2, "EMPTY");
+
+        for (int cellId : members.get(root2)) {
+            parent[cellId] = root1;
+            members.get(root1).add(cellId);
         }
         members.remove(root2);
-        
-        
-        if (!val1.equals("EMPTY")) {
-            valueMap.put(root1, val1);
+
+        if (!value1.equals("EMPTY")) {
+            valueMap.put(root1, value1);
         } else {
-            valueMap.put(root1, val2);
+            valueMap.put(root1, value2);
         }
         valueMap.remove(root2);
     }
-    
-    
-    private void handleUnmerge(int r, int c) {
-        int id   = toId(r, c);
+
+    private void unmergeCell(int row, int col) {
+        int id = toId(row, col);
         int root = find(id);
-        
-        
-        String preservedValue = valueMap.getOrDefault(root, "EMPTY");
-        Set<Integer> group    = new HashSet<>(members.get(root));
-        
-        
+
+        String originalValue = valueMap.getOrDefault(root, "EMPTY");
+        Set<Integer> group = new HashSet<>(members.get(root));
+
         members.remove(root);
         valueMap.remove(root);
-        
-        
-        for (int m : group) {
-            parent[m] = m;
-            members.put(m, new HashSet<>(Arrays.asList(m)));
-            valueMap.put(m, "EMPTY");
+
+        for (int cellId : group) {
+            parent[cellId] = cellId;
+            members.put(cellId, new HashSet<>(Collections.singleton(cellId)));
+            valueMap.put(cellId, "EMPTY");
         }
-        
-        
-        valueMap.put(id, preservedValue);
+
+        valueMap.put(id, originalValue);
     }
-    
-    
-    private void handlePrint(int r, int c, List<String> result) {
-        int id   = toId(r, c);
+
+    private void printCell(int row, int col, List<String> output) {
+        int id = toId(row, col);
         int root = find(id);
-        result.add(valueMap.getOrDefault(root, "EMPTY"));
+        output.add(valueMap.getOrDefault(root, "EMPTY"));
     }
 }
