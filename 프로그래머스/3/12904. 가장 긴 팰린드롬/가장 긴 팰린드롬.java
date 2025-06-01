@@ -1,21 +1,21 @@
 class Solution{
     public int solution(String s) {
-        int max = 1;
-
+        int answer = 1;
+        
         for (int i = 0; i < s.length(); i++) {
-            max = Math.max(max, expand(s, i, i));     // 홀수 길이
-            max = Math.max(max, expand(s, i, i + 1)); // 짝수 길이
+            answer = Math.max(answer, expand(i - 1, i + 1, s));
+            answer = Math.max(answer, expand(i, i + 1, s));
         }
-
-        return max;
+        
+        return answer;
     }
-
-    private int expand(String s, int left, int right) {
+    
+    public int expand(int left, int right, String s) {
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
             left--;
             right++;
         }
+        
         return right - left - 1;
     }
-
 }
