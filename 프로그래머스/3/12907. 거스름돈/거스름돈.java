@@ -8,10 +8,11 @@ class Solution {
         
         for (int coin : money) {
             for (int i = coin; i <= n; i++) {    
-                dp[i] += dp[i - coin] % MOD;    
+                dp[i] = (dp[i] + dp[i - coin]) % MOD;    
             }
         }
     
+        
         return dp[n];
     }
 }
