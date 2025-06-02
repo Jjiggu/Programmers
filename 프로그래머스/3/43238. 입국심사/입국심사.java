@@ -1,23 +1,42 @@
-class Solution {
-    public long solution(int n, int[] times) {
-        long right = 1_000_000_000L * 100_000L;
-        long left = 0;
-        
-        while(left <= right) {
-            long mid = (left + right) / 2;
-            long total = 0;
-            
-            for (int time : times) {
-                total += mid / time;
-            }
-            
-            if (total >= n) {
-                right = mid - 1;
-            } else {
-                left = mid + 1;
-            } 
-        }
-        
-        return left;
-    }
-}
+import java.util.*;
+
+ class Solution {
+
+     private static final long SIZE = 1000000000;
+
+     public long solution(int n, int[] times) {
+
+         Arrays.sort(times);
+         long min = 1, max = SIZE*SIZE;
+
+         long cnt = max;
+
+         while(min <= max){
+
+             long mid = (min+max)/2;
+
+             if(check(mid,times) >= n){
+                 max = mid-1;
+                 cnt = Math.min(mid,cnt);
+             }
+             else{
+                 min = mid+1;
+             }
+         }
+
+         return min;
+
+     }
+
+     private static long check(long mid, int [] times){
+
+         long sum = 0;
+
+         for(int t : times){
+             sum += mid/t;
+         }
+
+         return sum;
+
+     }
+ }
