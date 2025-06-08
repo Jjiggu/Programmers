@@ -13,10 +13,10 @@ class Solution {
     }
     
     static List<Node>[] graph;
-    static boolean[] visited;
     static int[] distFromS, distFromA, distFromB;
     
     public int solution(int n, int s, int a, int b, int[][] fares) {
+        
         graph = new ArrayList[n + 1];
         distFromS = new int[n + 1];
         distFromA = new int[n + 1];
@@ -35,19 +35,18 @@ class Solution {
         dijkstra(a, distFromA);
         dijkstra(b, distFromB);
         
-        
-        int minCost = Integer.MAX_VALUE;
+        int answer = Integer.MAX_VALUE;
         
         for (int i = 1; i <= n; i++) {
             int cost = distFromS[i] + distFromA[i] + distFromB[i];
-            minCost = Math.min(minCost, cost);
+            answer = Math.min(answer, cost);
         }
         
-        return minCost;
+        return answer;   
     }
     
     
-    private int[] dijkstra(int start, int[] dist) {
+    public int[] dijkstra(int start, int[] dist) {
         PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
         Arrays.fill(dist, Integer.MAX_VALUE);
         
@@ -59,7 +58,7 @@ class Solution {
             
             if (dist[now.v] < now.cost) continue;
             
-            for (Node next : graph[now.v]){
+            for (Node next : graph[now.v]) {
                 int nextCost = dist[now.v] + next.cost;
                 
                 if (dist[next.v] > nextCost) {
@@ -68,7 +67,6 @@ class Solution {
                 }
             }
         }
-        
         return dist;
     }
 }
