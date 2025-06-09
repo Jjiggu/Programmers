@@ -14,20 +14,6 @@ class Solution {
         }
     }
     
-    
-    public void insert(Node parent, Node child) {
-        if (child.x < parent.x) {
-            if (parent.left == null) parent.left = child;
-            else insert(parent.left, child);
-        } else {
-            if (parent.right == null) parent.right = child;
-            else insert(parent.right, child);
-        }
-    }
-    
-    
-    Node root;
-    
     public int[][] solution(int[][] nodeinfo) {
         List<Node> nodes = new ArrayList<>();
         
@@ -37,12 +23,12 @@ class Solution {
             nodes.add(new Node(x, y, i + 1));
         }
         
-        nodes.sort((a, b) -> {
-            if (a.y == b.y) return a.x - b.x;
-            return b.y - a.y;
+        nodes.sort((o1, o2) -> {
+            if (o1.y == o2.y) return o1.x - o2.x;
+            return o2.y - o1.y;
         });
         
-        root = nodes.get(0);
+        Node root = nodes.get(0);
         
         for (int i = 1; i < nodes.size(); i++) {
             insert(root, nodes.get(i));
@@ -57,6 +43,17 @@ class Solution {
         int[] postArr = post.stream().mapToInt(i -> i).toArray();
         
         return new int[][]{preArr, postArr};
+    }
+    
+    
+    public void insert(Node parent, Node child) {
+        if (child.x < parent.x) {
+            if (parent.left == null) parent.left = child;
+            else insert(parent.left, child);
+        } else {
+            if (parent.right == null) parent.right = child;
+            else insert(parent.right, child);
+        }
     }
     
     
