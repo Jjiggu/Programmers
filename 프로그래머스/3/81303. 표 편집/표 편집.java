@@ -1,61 +1,54 @@
 import java.util.*;
 
 class Solution {
-    public String solution(int n, int k, String[] cmd) {
-        int[] prev = new int[n];
-        int[] next = new int[n];
-        boolean[] isDeleted = new boolean[n];
-        Stack<Integer> stack = new Stack<>();
+    class Node {
+        int idx;
+        Node prev, next;
         
-        for (int i = 0; i < n; i++) {
-            prev[i] = i - 1;
-            next[i] = i + 1;
+        public Node(int idx) {
+            this.idx = idx;
         }
-        
-        next[n - 1] = -1;
-        
-        int finalCursor = processCommands(cmd, k, prev, next, isDeleted, stack);
-
-        return buildResult(isDeleted);
     }
     
-    private int processCommands(String[] cmd, int cursor, int[] prev, int[] next, boolean[] isDeleted, Stack<Integer> stack) {
+    
+    public String solution(int n, int k, String[] cmd) {    
+        Node[] nodes = new Node[n];
+        for (int i = 0; i < n; i++) nodes[i] = new Node(i);
+        for (int i = 1; i < n; i++) {
+            nodes[i].prev = nodes[i - 1];
+            nodes[i - 1].next = nodes[i];
+        }
+        
+        Node cursor = nodes[k];
+        Stack<Node> removed = new Stack<>();
+        
         
         for (String c : cmd) {
-            char command = c.charAt(0);
-            
-            if (command == 'U') {
-                int x = Integer.parseInt(c.split(" ")[1]);
-                for (int i = 0; i < x; i++) cursor = prev[cursor];
-            } else if (command == 'D') {
-                int x = Integer.parseInt(c.split(" ")[1]);
-                for (int i = 0; i < x; i++) cursor = next[cursor];
-            } else if (command == 'C') {
-                stack.push(cursor);
-                isDeleted[cursor] = true;
+            char type = c.charAt(0);
 
-                if (prev[cursor] != -1) next[prev[cursor]] = next[cursor];
-                if (next[cursor] != -1) prev[next[cursor]] = prev[cursor];
-
-                cursor = (next[cursor] != -1) ? next[cursor] : prev[cursor];
-            } else if (command == 'Z') {
-                int restore = stack.pop();
-                isDeleted[restore] = false;
-
-                if (prev[restore] != -1) next[prev[restore]] = restore;
-                if (next[restore] != -1) prev[next[restore]] = restore;
+            if (type == 'U') {
+                int x = Integer.parseInt(c.substring(2));
+                for (int i = 0; i < x; i++) cursor = cursor.prev;
+            } else if (type == 'D') {
+                int x = Integer.parseInt(c.substring(2));
+                for (int i = 0; i < x; i++) cursor = cursor.next;
+            } else if (type == 'C') {
+                removed.push(cursor);
+                if (cursor.prev != null) cursor.prev.next = cursor.next;
+                if (cursor.next != null) cursor.next.prev = cursor.prev;
+                Node next = (cursor.next != null) ? cursor.next : cursor.prev;
+                cursor = next;
+            } else if (type == 'Z') {
+                Node node = removed.pop();
+                if (node.prev != null) node.prev.next = node;
+                if (node.next != null) node.next.prev = node;
             }
         }
         
-        return cursor;
-    }
-    
-    private String buildResult(boolean[] isDeleted) {
         StringBuilder sb = new StringBuilder();
-        
-        for (boolean deleted : isDeleted) {
-            sb.append(deleted ? 'X' : 'O');
-        }
+        boolean[] isDelete = new boolean[n];
+        while(!removed.isEmpty()) isDelete[removed.pop().idx] = true;
+        for (int i = 0; i < n; i++) sb.append(isDelete[i] ? 'X' : 'O');
         
         return sb.toString();
     }
