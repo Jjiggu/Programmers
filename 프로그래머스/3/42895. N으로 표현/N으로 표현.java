@@ -4,15 +4,13 @@ class Solution {
     public int solution(int N, int number) {
         if (N == number) return 1;
         
-        Set<Integer>[] dp = new HashSet[9];  
+        Set<Integer>[] dp = new HashSet[9];
         
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i < 9; i++) {
             dp[i] = new HashSet<>();
             
             int nn = 0;
-            for (int j = 0; j < i; j++) {
-                nn = nn * 10 + N;
-            }
+            for (int j = 0; j < i; j++) nn = nn * 10 + N;
             dp[i].add(nn);
             
             for (int j = 1; j < i; j++) {
@@ -29,6 +27,6 @@ class Solution {
             if (dp[i].contains(number)) return i;
         }
         
-        return -1; 
+        return -1;
     }
 }
