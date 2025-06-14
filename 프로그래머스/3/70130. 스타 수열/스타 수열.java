@@ -2,32 +2,30 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] a) {
-        Map<Integer, Integer> countMap = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         
-        for (int num : a) {
-            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
-        }
-
-        // 등장을 많이 한 숫자 순으로 정렬
-        List<Integer> sortedKeys = new ArrayList<>(countMap.keySet());
-        sortedKeys.sort((x, y) -> countMap.get(y) - countMap.get(x));  // 내림차순
-
+        for (int num : a) map.put(num, map.getOrDefault(num, 0) + 1);
+        
+        List<Integer> sortedKeys = new ArrayList<>(map.keySet());
+        sortedKeys.sort((o1, o2) -> map.get(o2) - map.get(o1));
+        
         int maxLen = 0;
-
-        for (int x : sortedKeys) {
-            if (countMap.get(x) * 2 <= maxLen) break;  // 더 길 수 없음
-            int pairCnt = 0;
+        
+        for (int key : sortedKeys) {
+            if (map.get(key) * 2 <= maxLen) break;
+            
+            int cnt = 0;
             for (int i = 0; i < a.length - 1;) {
-                if (a[i] != a[i + 1] && (a[i] == x || a[i + 1] == x)) {
-                    pairCnt++;
+                if (a[i] != a[i + 1] && (a[i] == key || a[i + 1] == key)) {
+                    cnt++;
                     i += 2;
                 } else {
                     i++;
                 }
             }
-            maxLen = Math.max(maxLen, pairCnt * 2);
+            maxLen = Math.max(maxLen, cnt * 2);
         }
-
+        
         return maxLen;
     }
 }
