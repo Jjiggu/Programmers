@@ -2,11 +2,8 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
-        
         List<int[]>[] graph = new ArrayList[n + 1];
-        for (int i = 0; i <= n; i++) {
-            graph[i] = new ArrayList<>();
-        }
+        for (int i = 0; i <= n; i++) graph[i] = new ArrayList<>();
         
         for (int[] path : paths) {
             int u = path[0];
@@ -16,33 +13,28 @@ class Solution {
             graph[v].add(new int[]{u, w});
         }
         
-        
-        
         boolean[] isGate = new boolean[n + 1];
         boolean[] isSummit = new boolean[n + 1];
         for (int gate : gates) isGate[gate] = true;
         for (int summit : summits) isSummit[summit] = true;
         
-        
         int[] intensity = dijkstra(graph, gates, isGate, isSummit, n);
         
         Arrays.sort(summits);
         
-        return findAnswer(summits, intensity);
+        return findAnswer(intensity, summits);
     }
     
-    
-    public int[] dijkstra(List<int[]>[] graph, int[] gates, boolean[] isGate, boolean[] isSummit, int n) {
+    private int[] dijkstra(List<int[]>[] graph, int[] gates, boolean[] isGate, boolean[] isSummit, int n) {
         int[] intensity = new int[n + 1];
         Arrays.fill(intensity, Integer.MAX_VALUE);
         
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o1 -> o1[1]));
         
         for (int gate : gates) {
             intensity[gate] = 0;
-            pq.offer(new int[]{gate, 0});
+            pq.add(new int[]{gate, 0});
         }
-        
         
         while (!pq.isEmpty()) {
             int[] cur = pq.poll();
@@ -58,10 +50,10 @@ class Solution {
                 
                 if (isGate[nextNode]) continue;
                 
-                int newIntensity = Math.max(intensity[now], weight);
-                if (intensity[nextNode] > newIntensity) {
-                    intensity[nextNode] = newIntensity;
-                    pq.offer(new int[]{nextNode, newIntensity});
+                int nextIntensity = Math.max(intensity[now], weight);
+                if (intensity[nextNode] > nextIntensity) {
+                    intensity[nextNode] = nextIntensity;
+                    pq.offer(new int[]{nextNode, nextIntensity});
                 }
             }
         }
@@ -69,8 +61,7 @@ class Solution {
         return intensity;
     }
     
-    
-    public int[] findAnswer(int[] summits, int[] intensity) {
+    private int[] findAnswer(int[] intensity, int[] summits) {
         int minSummit = 0;
         int minIntensity = Integer.MAX_VALUE;
         
@@ -81,6 +72,6 @@ class Solution {
             }
         }
         
-        return new int[]{minSummit, minIntensity}; 
+        return new int[]{minSummit, minIntensity};
     }
 }
