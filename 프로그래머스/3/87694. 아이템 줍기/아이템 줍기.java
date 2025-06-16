@@ -16,10 +16,9 @@ class Solution {
     
     public int bfs(int characterX, int characterY, int itemX, int itemY, int[][] map, boolean[][] visited) {
         Deque<int[]> q = new ArrayDeque<>();
-        int[][] dist = new int[101][101];
-        
-        q.add(new int[]{characterX * 2, characterY * 2});
         visited[characterX * 2][characterY * 2] = true;
+        q.add(new int[]{characterX * 2, characterY * 2});
+        int[][] dist = new int[101][101];
         
         while (!q.isEmpty()) {
             int[] now = q.poll();
@@ -34,9 +33,9 @@ class Solution {
                 
                 if (nx >= 0 && ny >= 0 && nx < map.length && ny < map[0].length) {
                     if (!visited[nx][ny] && map[nx][ny] == 1) {
-                        q.add(new int[]{nx, ny});
                         visited[nx][ny] = true;
                         dist[nx][ny] = dist[x][y] + 1;
+                        q.add(new int[]{nx, ny});
                     }
                 }   
             }
