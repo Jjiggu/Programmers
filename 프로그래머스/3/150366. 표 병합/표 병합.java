@@ -1,144 +1,100 @@
 import java.util.*;
 
-public class Solution {
-
-    private static final int SIZE = 50 * 50;
-
-    private final int[] parent = new int[SIZE];
-    private final Map<Integer, String> valueMap = new HashMap<>();
-    private final Map<Integer, Set<Integer>> members = new HashMap<>();
+class Solution {
+    static final int SIZE = 51; // 1-based 인덱스, 50까지
 
     public String[] solution(String[] commands) {
-        for (int i = 0; i < SIZE; i++) {
-            parent[i] = i;
-            valueMap.put(i, "EMPTY");
-            members.put(i, new HashSet<>(Collections.singleton(i)));
+        int[][] merged = new int[SIZE][SIZE]; // 병합 그룹 대표 좌표를 1차원 인덱스로 저장
+        String[][] content = new String[SIZE][SIZE];
+
+        // 초기화: 각 셀이 자기 자신이 대표, 내용은 EMPTY
+        for (int i = 1; i < SIZE; i++) {
+            for (int j = 1; j < SIZE; j++) {
+                merged[i][j] = i * SIZE + j;
+                content[i][j] = "EMPTY";
+            }
         }
 
-        List<String> output = new ArrayList<>();
+        List<String> answer = new ArrayList<>();
 
         for (String cmd : commands) {
-            String[] tokens = cmd.split(" ");
-            String command = tokens[0];
-
-            switch (command) {
-                case "UPDATE":
-                    if (tokens.length == 4) {
-                        updateCell(
-                            Integer.parseInt(tokens[1]),
-                            Integer.parseInt(tokens[2]),
-                            tokens[3]
-                        );
-                    } else {
-                        updateValue(tokens[1], tokens[2]);
+            String[] parts = cmd.split(" ");
+            if (parts[0].equals("UPDATE")) {
+                if (parts.length == 4) {
+                    int r = Integer.parseInt(parts[1]);
+                    int c = Integer.parseInt(parts[2]);
+                    String value = parts[3];
+                    int group = merged[r][c];
+                    // 병합 그룹 전체 값을 바꿔준다
+                    for (int i = 1; i < SIZE; i++) {
+                        for (int j = 1; j < SIZE; j++) {
+                            if (merged[i][j] == group) {
+                                content[i][j] = value;
+                            }
+                        }
                     }
-                    break;
+                } else { // UPDATE value1 value2
+                    String value1 = parts[1];
+                    String value2 = parts[2];
+                    for (int i = 1; i < SIZE; i++) {
+                        for (int j = 1; j < SIZE; j++) {
+                            if (content[i][j].equals(value1)) {
+                                content[i][j] = value2;
+                            }
+                        }
+                    }
+                }
+            } else if (parts[0].equals("MERGE")) {
+                int r1 = Integer.parseInt(parts[1]);
+                int c1 = Integer.parseInt(parts[2]);
+                int r2 = Integer.parseInt(parts[3]);
+                int c2 = Integer.parseInt(parts[4]);
+                if (r1 == r2 && c1 == c2) continue; // 자기 자신과 병합은 무시
 
-                case "MERGE":
-                    mergeCells(
-                        Integer.parseInt(tokens[1]),
-                        Integer.parseInt(tokens[2]),
-                        Integer.parseInt(tokens[3]),
-                        Integer.parseInt(tokens[4])
-                    );
-                    break;
+                int group1 = merged[r1][c1];
+                int group2 = merged[r2][c2];
 
-                case "UNMERGE":
-                    unmergeCell(
-                        Integer.parseInt(tokens[1]),
-                        Integer.parseInt(tokens[2])
-                    );
-                    break;
+                // 병합 시 대표 선택(둘 중 한 그룹으로 통합)
+                String newValue = !content[r1][c1].equals("EMPTY") ? content[r1][c1] : content[r2][c2];
 
-                case "PRINT":
-                    printCell(
-                        Integer.parseInt(tokens[1]),
-                        Integer.parseInt(tokens[2]),
-                        output
-                    );
-                    break;
-
-                default:
+                for (int i = 1; i < SIZE; i++) {
+                    for (int j = 1; j < SIZE; j++) {
+                        if (merged[i][j] == group2) {
+                            merged[i][j] = group1;
+                        }
+                    }
+                }
+                // 병합된 그룹 전체 값을 newValue로 변경
+                for (int i = 1; i < SIZE; i++) {
+                    for (int j = 1; j < SIZE; j++) {
+                        if (merged[i][j] == group1) {
+                            content[i][j] = newValue;
+                        }
+                    }
+                }
+            } else if (parts[0].equals("UNMERGE")) {
+                int r = Integer.parseInt(parts[1]);
+                int c = Integer.parseInt(parts[2]);
+                int group = merged[r][c];
+                String cellValue = content[r][c];
+                // 병합된 모든 셀을 분리
+                for (int i = 1; i < SIZE; i++) {
+                    for (int j = 1; j < SIZE; j++) {
+                        if (merged[i][j] == group) {
+                            merged[i][j] = i * SIZE + j;
+                            content[i][j] = "EMPTY";
+                        }
+                    }
+                }
+                // 단, 해제된 셀(r,c)는 원래 값으로 복원
+                content[r][c] = cellValue;
+            } else if (parts[0].equals("PRINT")) {
+                int r = Integer.parseInt(parts[1]);
+                int c = Integer.parseInt(parts[2]);
+                answer.add(content[r][c]);
             }
         }
 
-        return output.toArray(new String[0]);
-    }
-
-    private int toId(int row, int col) {
-        return (row - 1) * 50 + (col - 1);
-    }
-
-    private int find(int x) {
-        if (parent[x] != x) {
-            parent[x] = find(parent[x]);
-        }
-        return parent[x];
-    }
-
-    private void updateCell(int row, int col, String value) {
-        int id = toId(row, col);
-        int root = find(id);
-        valueMap.put(root, value);
-    }
-
-    private void updateValue(String oldValue, String newValue) {
-        for (Map.Entry<Integer, String> entry : valueMap.entrySet()) {
-            if (entry.getValue().equals(oldValue)) {
-                entry.setValue(newValue);
-            }
-        }
-    }
-
-    private void mergeCells(int r1, int c1, int r2, int c2) {
-        int id1 = toId(r1, c1);
-        int id2 = toId(r2, c2);
-        int root1 = find(id1);
-        int root2 = find(id2);
-
-        if (root1 == root2) {
-            return;
-        }
-
-        String value1 = valueMap.getOrDefault(root1, "EMPTY");
-        String value2 = valueMap.getOrDefault(root2, "EMPTY");
-
-        for (int cellId : members.get(root2)) {
-            parent[cellId] = root1;
-            members.get(root1).add(cellId);
-        }
-        members.remove(root2);
-
-        if (!value1.equals("EMPTY")) {
-            valueMap.put(root1, value1);
-        } else {
-            valueMap.put(root1, value2);
-        }
-        valueMap.remove(root2);
-    }
-
-    private void unmergeCell(int row, int col) {
-        int id = toId(row, col);
-        int root = find(id);
-
-        String originalValue = valueMap.getOrDefault(root, "EMPTY");
-        Set<Integer> group = new HashSet<>(members.get(root));
-
-        members.remove(root);
-        valueMap.remove(root);
-
-        for (int cellId : group) {
-            parent[cellId] = cellId;
-            members.put(cellId, new HashSet<>(Collections.singleton(cellId)));
-            valueMap.put(cellId, "EMPTY");
-        }
-
-        valueMap.put(id, originalValue);
-    }
-
-    private void printCell(int row, int col, List<String> output) {
-        int id = toId(row, col);
-        int root = find(id);
-        output.add(valueMap.getOrDefault(root, "EMPTY"));
+        return answer.toArray(new String[0]);
     }
 }
