@@ -1,17 +1,27 @@
 class Solution {
     public int solution(int storey) {
         int answer = 0;
+        
         while (storey > 0) {
-            int digit = storey % 10;
+            int lastDigit = storey % 10;
             int next = (storey / 10) % 10;
-            if (digit > 5 || (digit == 5 && next >= 5)) {
-                answer += 10 - digit;
-                storey += 10 - digit;
+            
+            if (lastDigit > 5) {
+                answer += (10 - lastDigit);
+                storey += 10;
+            } else if (lastDigit < 5) {
+                answer += lastDigit;
             } else {
-                answer += digit;
+                if (next >= 5) {
+                    answer += 5;
+                    storey += 10;
+                } else {
+                    answer += 5;
+                }
             }
             storey /= 10;
         }
+        
         return answer;
     }
 }
