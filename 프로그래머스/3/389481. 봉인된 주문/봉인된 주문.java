@@ -2,29 +2,24 @@ import java.util.*;
 
 class Solution {
     public String solution(long n, String[] bans) {
-        
-        Arrays.sort(bans, (u, v) -> {
-            if (u.length() != v.length()) 
-                return u.length() - v.length();
-            return u.compareTo(v);
-        });
 
+        Arrays.sort(bans, (o1, o2) -> {
+            if (o1.length() != o2.length()) return o1.length() - o2.length();
+            return o1.compareTo(o2);
+        });
         
         long curr = n;
         for (String ban : bans) {
             String cand = getOrder(curr);
-            if (ban.length() < cand.length()
-             || (ban.length() == cand.length() && ban.compareTo(cand) <= 0)) {
+            if (ban.length() < cand.length() || (ban.length() == cand.length() && ban.compareTo(cand) <= 0)) {
                 curr++;
             } else if (ban.length() > cand.length()) {
                 break;
             }
         }
-
         
         return getOrder(curr);
     }
-
     
     private String getOrder(long n) {
         StringBuilder sb = new StringBuilder();
