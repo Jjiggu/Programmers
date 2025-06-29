@@ -1,11 +1,10 @@
 class Solution {
     public int[] solution(int e, int[] starts) {
-        
         int[] divCnt = new int[e + 1];
         for (int i = 1; i <= e; i++) {
             for (int j = i; j <= e; j += i) {
                 divCnt[j]++;
-            } 
+            }
         }
         
         int[] best = new int[e + 2];
