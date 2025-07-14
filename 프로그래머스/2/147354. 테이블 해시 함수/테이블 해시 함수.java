@@ -8,18 +8,18 @@ class Solution {
             return o1[col - 1] - o2[col - 1];
         });
         
-        ArrayList<Integer> tmp = new ArrayList<>();
-        for (int i = row_begin - 1; i <= row_end - 1; i++) {
-            int nowNum = 0;
-            for (int num : data[i]) {
-                nowNum += num % (i + 1);
+        ArrayList<Integer> modData = new ArrayList<>();
+        for (int i = row_begin; i <= row_end; i++) {
+            int dataNum = 0;
+            for (int num : data[i - 1]) {
+                dataNum += num % i;
             }
-            tmp.add(nowNum);
+            modData.add(dataNum);
         }
     
-        int answer = tmp.get(0);
-        for (int i = 1; i < tmp.size(); i++) {
-            answer = answer ^ tmp.get(i);
+        int answer = modData.get(0);
+        for (int i = 1; i < modData.size(); i++) {
+            answer = answer ^ modData.get(i);
         }        
         return answer;
     }
