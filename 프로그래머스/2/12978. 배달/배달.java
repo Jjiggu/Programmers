@@ -25,12 +25,10 @@ class Solution {
             graph[r[1]].add(new Node(r[0], r[2]));
         }
         
-        int[] dist = dijkstra(N, 1);
-        
+        int[] dist = dijkstra(N, 1);    
         int answer = 0;
-        for (int d : dist) {
-            if (d <= K) answer++;
-        }
+        
+        for (int d : dist) if (d <= K) answer++;
         
         return answer;
     }
