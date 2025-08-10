@@ -3,9 +3,6 @@ import java.util.*;
 class Solution {
     
     private static final char[] MEMBERS = {'A','C','F','J','M','N','R','T'};
-    private final Map<Character, Integer> IDX = Map.of(
-        'A',0,'C',1,'F',2,'J',3,'M',4,'N',5,'R',6,'T',7
-    );
     
     static class Cond {
         char a, b, op; 
@@ -35,7 +32,6 @@ class Solution {
             conds.add(new Cond(a, b, op, v));
         }
         
-        Arrays.fill(used, false);
         Arrays.fill(pos, -1);
         answer = 0;
         
@@ -56,7 +52,7 @@ class Solution {
             perm[depth] = who;
             pos[who - 'A'] = depth;
 
-            if (partialOk(who, depth)) {
+            if (partialOk(who)) {
                 dfs(depth + 1);
             }
 
@@ -65,7 +61,7 @@ class Solution {
         }
     }
     
-    private boolean partialOk(char who, int depth) {
+    private boolean partialOk(char who) {
         int pWho = pos[who - 'A'];
         
         for (Cond c : conds) {
