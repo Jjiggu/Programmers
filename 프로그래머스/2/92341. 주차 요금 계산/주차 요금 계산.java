@@ -21,8 +21,7 @@ class Solution {
         }
         
         int endOfDay = 23 * 60 + 59;
-        for (Map.Entry<String, int[]> e : map.entrySet()) {
-            int[] val = e.getValue();
+        for (int[] val : map.values()) {
             if (val[0] != -1) {
                 val[1] += endOfDay - val[0];
                 val[0] = -1;
