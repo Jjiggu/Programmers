@@ -5,20 +5,15 @@ class Solution {
         PriorityQueue<Integer> maxPq = new PriorityQueue<>(Collections.reverseOrder());
         PriorityQueue<Integer> minPq = new PriorityQueue<>();
         
-        
         for (String operation : operations) {
-            if (operation.startsWith("I ")) {
-                int n = Integer.parseInt(operation.substring(2));
-                maxPq.offer(n);
-                minPq.offer(n);
-            } else {
-                if (operation.equals("D 1") && !maxPq.isEmpty()) {
-                    minPq.remove(maxPq.poll());
-                }
-                
-                if (operation.equals("D -1") && !minPq.isEmpty()) {
-                    maxPq.remove(minPq.poll());
-                }
+            String[] op = operation.split(" ");
+            if (op[0].equals("I")) {
+                maxPq.add(Integer.parseInt(op[1]));
+                minPq.add(Integer.parseInt(op[1]));
+            } else if (op[1].equals("1") && !maxPq.isEmpty()) {
+                minPq.remove(maxPq.poll());
+            } else if (op[1].equals("-1") && !minPq.isEmpty()){
+                maxPq.remove(minPq.poll());
             }
         }
         
@@ -26,6 +21,6 @@ class Solution {
             return new int[]{0, 0};
         } 
         
-        return new int[]{maxPq.poll(), minPq.poll()};
+        return new int[]{maxPq.poll(), minPq.poll()} ;
     }
 }
