@@ -8,7 +8,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             if (!visited[i]) {
                 visited[i] = true;
-                bfs(computers, i, visited);
+                bfs(i, computers, visited);
                 result++;
             }
         }
@@ -16,16 +16,15 @@ class Solution {
         return result;
     }
     
-    
-    private void bfs(int[][] computers, int startNum, boolean[] visited) {
-        Queue<Integer> q = new LinkedList<>();
-        q.add(startNum);
+    private void bfs(int idx, int[][] computers, boolean[] visited) {
+        Deque<Integer> q = new ArrayDeque<>();
+        q.add(idx);
         
         while(!q.isEmpty()) {
-            int num = q.poll();
+            int nowIdx = q.poll();
             
             for (int i = 0; i < computers.length; i++) {
-                if (i != num && computers[num][i] == 1) {
+                if (i != nowIdx && computers[nowIdx][i] == 1) {
                     if (!visited[i]) {
                         visited[i] = true;
                         q.add(i);
@@ -33,6 +32,5 @@ class Solution {
                 }
             }
         }
-        
     }
 }
