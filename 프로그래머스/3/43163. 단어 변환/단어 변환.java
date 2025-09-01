@@ -2,33 +2,27 @@ import java.util.*;
 
 class Solution {
     public int solution(String begin, String target, String[] words) {
+
+        boolean[] isUse = new boolean[words.length];
         
-        boolean[] isUsed = new boolean[words.length];
-        Arrays.sort(words);
-        
-        return bfs(begin, target, words, isUsed, 0);   
+        return bfs(begin, target, words, isUse);
     }
     
-    
-    public int bfs(String begin, String target, String[] words, boolean[] isUsed, int cnt) {
-        Queue<String> q = new LinkedList<>();
-        q.offer(begin);
+    private int bfs(String begin, String target, String[] words, boolean[] isUse) {
+        Deque<Word> q = new ArrayDeque<>();
+        q.offer(new Word(begin, 0));
         
-        while(!q.isEmpty()) {
-            String nowWord = q.poll();
+        while (!q.isEmpty()) {
+            Word cur = q.poll();
             
-            if (nowWord.equals(target)) {
-                return cnt;
+            if (cur.word.equals(target)) {
+                return cur.cnt;
             }
             
-            
             for (int i = 0; i < words.length; i++) {
-                if (!isUsed[i] && isMatched(nowWord, words[i])) {
-                    System.out.println(words[i]);
-                    q.offer(words[i]);
-                    isUsed[i] = true;
-                    cnt++;
-                    break;
+                if (!isUse[i] && isMatched(cur.word, words[i])) {
+                    isUse[i] = true;
+                    q.offer(new Word(words[i], cur.cnt + 1));
                 }
             }
         }
@@ -36,14 +30,23 @@ class Solution {
         return 0;
     }
     
-    
-    public boolean isMatched(String word, String target) {
+    public boolean isMatched(String from, String to) {
         int cnt = 0;
         
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) != target.charAt(i)) cnt++;
+        for (int i = 0; i < from.length(); i++) {
+            if (from.charAt(i) != to.charAt(i)) cnt++;
         }
         
         return cnt == 1;
+    }
+    
+    class Word {
+        String word;
+        int cnt;
+        
+        Word(String word, int cnt) {
+            this.word = word;
+            this.cnt = cnt;
+        }
     }
 }
