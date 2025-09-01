@@ -1,35 +1,19 @@
 import java.util.*;
 
 class Solution {
-    static PriorityQueue<Integer> pq;
-    
     public long solution(int n, int[] works) {
-        pq = new PriorityQueue<>(Collections.reverseOrder());
-        
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        long result = 0;
+    
         for (int work : works) pq.offer(work);
         
-        doOvertime(n);
-        
-        return pqSum(pq);
-    }
-    
-    
-    public void doOvertime(int n) {
-        
-        while (n > 0) {
+        for (int i = 0; i < n; i++) {
             int num = pq.poll();
-            
             pq.offer(num > 0 ? num - 1 : num);
-            n--;
         }
-    }
-    
-    
-    private long pqSum(PriorityQueue<Integer> pq) {
-        long result = 0;
         
-        while(!pq.isEmpty()) {
-            result += Math.pow(pq.poll(), 2);
+        while (!pq.isEmpty()) {
+            result += (long)Math.pow(pq.poll(), 2);
         }
         
         return result;
