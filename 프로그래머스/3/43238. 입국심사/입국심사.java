@@ -1,42 +1,36 @@
-import java.util.*;
+class Solution {
+     
+    static long MAX_VALUE = 100_000_000;
 
- class Solution {
-
-     private static final long SIZE = 1000000000;
-
-     public long solution(int n, int[] times) {
-
-         Arrays.sort(times);
-         long min = 1, max = SIZE*SIZE;
-
-         long cnt = max;
-
-         while(min <= max){
-
-             long mid = (min+max)/2;
-
-             if(check(mid,times) >= n){
-                 max = mid-1;
-                 cnt = Math.min(mid,cnt);
-             }
-             else{
-                 min = mid+1;
-             }
-         }
-
-         return min;
-
-     }
-
-     private static long check(long mid, int [] times){
-
-         long sum = 0;
-
-         for(int t : times){
-             sum += mid/t;
-         }
-
-         return sum;
-
-     }
- }
+    public long solution(int n, int[] times) {
+        return binarySearch(n, times);
+    }
+    
+    private long binarySearch(int n, int[] times) {   
+        long left = 1;
+        long right = MAX_VALUE * MAX_VALUE;
+    
+        while (left <= right) {
+            
+            long mid = (left + right) / 2;
+            
+            if (isValid(mid, times) >= n) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        return left;
+    }
+    
+    private long isValid(long mid, int[] times) {
+        long cnt = 0;
+        
+        for (int time : times) {
+            cnt += mid / time;
+        }
+        
+        return cnt;
+    }
+}
