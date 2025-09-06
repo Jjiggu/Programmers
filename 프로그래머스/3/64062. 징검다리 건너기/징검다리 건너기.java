@@ -1,37 +1,40 @@
 class Solution {
+    
+    static final int MAX_VALUE = 200_000_000;
+    
     public int solution(int[] stones, int k) {
-        int right = 200_000_000;
+        return binarySearch(stones, k);
+    }
+    
+    private int binarySearch(int[] stones, int k) {
         int left = 0;
+        int right = MAX_VALUE;
         
         while (left <= right) {
             int mid = (left + right) / 2;
             
-            if (canCross(stones, k, mid)) {
-                left = mid + 1;
-            } else {
+            if (!canCross(mid, stones, k)) {
                 right = mid - 1;
+            } else {
+                left = mid + 1;
             }
         }
         
         return left - 1;
-        
     }
     
-    
-    public boolean canCross(int[] stones, int k, int mid) {
-        int skip = 0;
+    private boolean canCross(int mid, int[] stones, int k) {
+        int cnt = 0;
         
         for (int stone : stones) {
             if (stone < mid) {
-                skip++;
-                if (skip >= k) {
-                    return false;   
-                }
+                cnt++;
+                if (cnt >= k) return false;
             } else {
-                skip = 0;
+                cnt = 0;   
             }
         }
         
         return true;
-     }
-}
+    }
+ }
