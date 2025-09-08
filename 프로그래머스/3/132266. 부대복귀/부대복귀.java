@@ -2,54 +2,53 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int n, int[][] roads, int[] sources, int destination) {
-        List<List<Integer>> graph = buildGraph(n, roads);
         int[] answer = new int[sources.length];
+        List<Integer>[] graph = buildGraph(n, roads);
+        
+        int[] dist = bfs(n, graph, destination);
         
         for (int i = 0; i < sources.length; i++) {
-            answer[i] = bfs(sources[i], n, graph, destination);
+            answer[i] = dist[sources[i]];
         }
         
         return answer;
-    }    
-    
-    
-    private List<List<Integer>> buildGraph(int n, int[][] roads) {
-        List<List<Integer>> graph = new ArrayList<>();
-        
-        for (int i = 0; i <= n; i++) {
-            graph.add(new ArrayList<>());
-        }
-        
-        for (int[] r : roads) {
-            graph.get(r[0]).add(r[1]);
-            graph.get(r[1]).add(r[0]);
-        }
-        
-        return graph;
     }
     
-    
-    private int bfs(int start, int n, List<List<Integer>> graph, int destination) {
-        int[] dist = new int[n + 1];
-        Deque<Integer> q = new ArrayDeque<>();
+    private int[] bfs(int n, List<Integer>[] graph, int start) {
         
+        int[] dist = new int[n + 1];
         Arrays.fill(dist, -1);
-        q.add(start);
+        
+        Deque<Integer> q = new ArrayDeque<>();
+        q.offer(start);
         dist[start] = 0;
         
-        while(!q.isEmpty()) {
+        while (!q.isEmpty()) {
             int cur = q.poll();
             
-            if (cur == destination) return dist[cur];
-            
-            for (int next : graph.get(cur)) {
+            for (int next : graph[cur]) {
                 if (dist[next] == -1) {
                     dist[next] = dist[cur] + 1;
-                    q.add(next);
+                    q.offer(next);
                 }
             }
         }
         
-        return -1;
+        return dist;
+    }
+    
+    private List<Integer>[] buildGraph(int n, int[][] roads) {
+        
+        List<Integer>[] graph = new ArrayList[n + 1];
+        
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int[] road : roads) {
+            graph[road[0]].add(road[1]);
+            graph[road[1]].add(road[0]);
+        }
+        
+        return graph;
     }
 }
