@@ -7,32 +7,30 @@ class Solution {
         
         List<String> path = new ArrayList<>();
         path.add("ICN");
-
-        List<String> result = dfs("ICN", tickets, path, visited);
         
-        return result.toArray(new String[0]);
+        List<String> answer = dfs("ICN", tickets, path, visited);
+        
+        return answer.toArray(new String[0]);
     }
-
     
     public List<String> dfs(String cur, String[][] tickets, List<String> path, boolean[] visited) {
         if (path.size() == tickets.length + 1) {
             return new ArrayList<>(path);
         }
-
+        
         for (int i = 0; i < tickets.length; i++) {
             if (!visited[i] && tickets[i][0].equals(cur)) {
                 visited[i] = true;
                 path.add(tickets[i][1]);
-                
                 List<String> result = dfs(tickets[i][1], tickets, path, visited);
-                
-                if (result != null) return result;
-                
+                if (!result.isEmpty()) {
+                    return result;
+                }
                 path.remove(path.size() - 1);
                 visited[i] = false;
             }
         }
-
-        return null;
+        
+        return new ArrayList<>();
     }
 }
