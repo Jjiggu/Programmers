@@ -1,42 +1,42 @@
 import java.util.*;
 
 class Solution {
-    public int solution(String[] user_id, String[] banned_id) {
-        Set<Set<String>> answers = new HashSet<>();
-        
-        dfs(0, user_id, banned_id, new HashSet<>(), answers);
-        
-        return answers.size();
-    }
-
     
-    public void dfs(int depth, String[] user_id, String[] banned_id, Set<String> currentSet, Set<Set<String>> answers) {
-        if (depth == banned_id.length) {
-            if (currentSet.size() == banned_id.length) {
-                answers.add(new HashSet<>(currentSet)); 
-            }
+    static final Set<HashSet<String>> set = new HashSet<>();
+    
+    public int solution(String[] user_id, String[] banned_id) {
+        
+        boolean[] isUsed = new boolean[user_id.length];
+        dfs(0, isUsed, user_id, banned_id, set, new ArrayList<>());
+        return set.size();
+    }
+    
+    private void dfs(int k, boolean[] isUsed, String[] user_id, String[] banned_id, Set<HashSet<String>> set, ArrayList<String> list) {
+        if (k == banned_id.length) {
+            set.add(new HashSet<>(list));
             return;
         }
         
-        for (String user : user_id) {
-            if (currentSet.contains(user)) continue;
-            
-            if(isMatch(user, banned_id[depth])) {
-                currentSet.add(user);
-                dfs(depth + 1, user_id, banned_id, currentSet, answers);
-                currentSet.remove(user);
+        for (int i = 0; i < user_id.length; i++) {
+            if (!isUsed[i] && isSame(user_id[i], banned_id[k])) {
+                isUsed[i] = true;
+                list.add(user_id[i]);
+                dfs(k + 1, isUsed, user_id, banned_id, set, list);
+                list.remove(list.size() - 1);
+                isUsed[i] = false;
             }
-        }
+        }        
     }
-
-        
-    public boolean isMatch(String user, String banned) {
+    
+    
+    
+    private boolean isSame(String user, String banned) {
         
         if (user.length() != banned.length()) return false;
         
         for (int i = 0; i < user.length(); i++) {
             if (banned.charAt(i) == '*') continue;
-            if (user.charAt(i) != banned.charAt(i)) return false;
+            if (banned.charAt(i) != user.charAt(i)) return false;
         }
         
         return true;
