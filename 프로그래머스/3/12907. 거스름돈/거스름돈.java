@@ -6,12 +6,11 @@ class Solution {
         int[] dp = new int[100001];
         dp[0] = 1;
         
-        for (int coin : money) {
-            for (int i = coin; i <= n; i++) {    
-                dp[i] = (dp[i] + dp[i - coin]) % MOD;    
+        for (int m : money) {
+            for (int i = m; i <= n; i++) {
+                dp[i] = (dp[i] + dp[i - m]) % MOD;
             }
         }
-    
         
         return dp[n];
     }
