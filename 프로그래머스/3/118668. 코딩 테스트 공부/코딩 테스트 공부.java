@@ -2,48 +2,39 @@ import java.util.*;
 
 class Solution {
     public int solution(int alp, int cop, int[][] problems) {
-        int maxAlp = 0;
-        int maxCop = 0;
+        int targetAlp = 0;
+        int targetCop = 0;
         
         for (int[] problem : problems) {
-            maxAlp = Math.max(problem[0], maxAlp);
-            maxCop = Math.max(problem[1], maxCop);
+            targetAlp = Math.max(problem[0], targetAlp);
+            targetCop = Math.max(problem[1], targetCop);
         }
-
-        alp = Math.min(alp, maxAlp);
-        cop = Math.min(cop, maxCop);
         
-        int[][] dp = new int[maxAlp + 2][maxCop + 2];
-        for (int i = 0; i <= maxAlp + 1; i++) {
+        alp = Math.min(alp, targetAlp);
+        cop = Math.min(cop, targetCop);
+        
+        int[][] dp = new int[targetAlp + 2][targetCop + 2];
+        for (int i = 0; i <= targetAlp + 1; i++) {
             Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
         
         dp[alp][cop] = 0; 
-
-        for (int i = alp; i <= maxAlp; i++) {
-            for (int j = cop; j <= maxCop; j++) {
-                if (dp[i][j] == Integer.MAX_VALUE) continue;
-
-                // 1. 알고리즘 공부
+        
+        for (int i = alp; i <= targetAlp; i++) {
+            for (int j = cop; j <= targetCop; j++) {
                 dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j] + 1);
-
-                // 2. 코딩 공부
                 dp[i][j + 1] = Math.min(dp[i][j + 1], dp[i][j] + 1);
-
-                // 3. 문제 풀이
+                
                 for (int[] problem : problems) {
-                    int reqAlp = problem[0], reqCop = problem[1];
-                    int rwdAlp = problem[2], rwdCop = problem[3], cost = problem[4];
-
-                    if (i >= reqAlp && j >= reqCop) {
-                        int nextAlp = Math.min(i + rwdAlp, maxAlp);
-                        int nextCop = Math.min(j + rwdCop, maxCop);
-                        dp[nextAlp][nextCop] = Math.min(dp[nextAlp][nextCop], dp[i][j] + cost);
+                    if (i >= problem[0] && j >= problem[1]) {
+                        int nextI = Math.min(targetAlp, i + problem[2]);
+                        int nextJ = Math.min(targetCop, j + problem[3]);
+                        dp[nextI][nextJ] = Math.min(dp[nextI][nextJ], dp[i][j] + problem[4]);
                     }
-                 }
+                }
             }
         }
-
-        return dp[maxAlp][maxCop];
+        
+        return dp[targetAlp][targetCop];
     }
 }
