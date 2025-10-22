@@ -1,35 +1,33 @@
 public class Solution {
     public int solution(String s) {
+        int minLen = s.length();
         int n = s.length();
-        int minLength = n; 
-
-        for (int k = 1; k <= n / 2; k++) {
-            StringBuilder compressed = new StringBuilder();
-            String prev = s.substring(0, k); 
-            int count = 1;
+        
+        for (int i = 1; i < n; i++) {  // 길이 1부터 s.length까지 탐색
+            StringBuilder sb = new StringBuilder();
+            String prev = s.substring(0, i);
+            int repeat = 1;
             
-            for (int i = k; i < n; i += k) {
-                String curr = (i + k <= n) ? s.substring(i, i + k) : s.substring(i);
-                if (prev.equals(curr)) {
-                    count++;
-                } else {
-                    if (count > 1) {
-                        compressed.append(count);
-                    }
-                    compressed.append(prev);
-                    prev = curr;
-                    count = 1;
+            for (int j = i; j < n; j += i) {
+                
+                String cur = s.substring(j, Math.min(j + i, n));
+                
+                if (prev.equals(cur)) { // 패턴이 동일한 경우에는 반복 +1
+                    repeat++;
+                } else {  // 다른 패턴이 발견되는 경우
+                    if (repeat > 1) sb.append(repeat);
+                    sb.append(prev);
+                    prev = cur;
+                    repeat = 1;
                 }
             }
             
-            if (count > 1) {
-                compressed.append(count);
-            }
-            compressed.append(prev);
-
-            minLength = Math.min(minLength, compressed.length());
+            if (repeat > 1) sb.append(repeat);
+            sb.append(prev);
+            
+            minLen = Math.min(minLen, sb.length());
         }
-
-        return minLength;
+        
+        return minLen;
     }
 }
