@@ -1,36 +1,38 @@
-class Solution {
-    public int solution(int[] diffs, int[] times, long limit) {
+class Solution { 
+    public int solution(int[] diffs, int[] times, long limit) { 
+        return bs(diffs, times, limit); 
+    } 
+    private int bs(int[] diffs, int[] times, long limit) { 
+        int left = 1; 
+        int right = Integer.MAX_VALUE; 
+        while (left < right) { 
+            int mid = left + (right - left) / 2;
+            if (solveSimul(mid, diffs, times, limit)) { 
+                right = mid; 
+            } else { 
+                left = mid + 1; 
+            } 
+        } 
         
-        int n = times.length;
-        long left = 1;
-        long right = 100_001;
+        return left; 
+    } 
+    
+    private boolean solveSimul(int proficiency, int[] diffs, int[] times, long limit) { 
+        long time = 0L; 
         
-        while (left <= right) {
-            long duration = 0;
-            long level = (left + right) / 2;
-            
-            for (int i = 0; i < n; i++) {
-                long diff = diffs[i];
-                long time_cur = times[i];
-
-                if (diff <= level) {
-                    duration += time_cur;
-                } else {
-                    long time_prev = 0;
-                    if (i > 0) {
-                        time_prev = times[i - 1];   
-                    }
-                    duration += (diff - level) * (time_cur + time_prev) + time_cur;
-                }
-            }
-            if (duration > limit) {
-                left = level + 1;   
-            } else {
-                right = level - 1;
-            }
-        }
+        for (int i = 0; i < diffs.length; i++) { 
+            int reqDiff = diffs[i]; 
+            int reqTime = times[i]; 
+            if (proficiency >= reqDiff) {  // 퍼즐 풀 수 있는 경우
+                time += reqTime; 
+            } else {  // 퍼즐 풀 수 없는 경우
+                int digit = reqDiff - proficiency;
+                int prevTime = i > 0 ? times[i - 1] : 0;
+                int curTime = times[i];
+                time += (long)(curTime + prevTime) * digit + curTime; 
+            } if (time > limit) return false; 
+        } 
         
-        
-        return (int)left;
-    }
+        return true; 
+    } 
 }
