@@ -4,8 +4,9 @@ class Solution {
         int[] starts = new int[n];
         int[] ends = new int[n];
         
-        for (int i = 0; i < n; i++) {
-            String[] parts = lines[i].split(" ");
+        int idx = 0;
+        for (String line : lines) {
+            String[] parts = line.split(" ");
             String[] hms = parts[1].split(":");
             int hour = Integer.parseInt(hms[0]);
             int min = Integer.parseInt(hms[1]);
@@ -15,8 +16,9 @@ class Solution {
             double duration = Double.parseDouble(parts[2].replace("s", ""));
             int startTime = (int)(endTime - duration * 1000 + 1);
             
-            starts[i] = startTime;
-            ends[i] = endTime;
+            starts[idx] = startTime;
+            ends[idx] = endTime;
+            idx++;
         }
         
         int answer = 0;
