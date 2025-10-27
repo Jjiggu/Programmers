@@ -3,25 +3,41 @@ import java.util.*;
 class Solution {
     public int solution(int cacheSize, String[] cities) {
         
+        List<String> cache = new ArrayList<>();
+        int answer = 0;
+        
         if (cacheSize == 0) return cities.length * 5;
         
-        int time = 0;
-        Deque<String> cache = new ArrayDeque<>();
-            
         for (String city : cities) {
-            city = city.toLowerCase(); 
+            city = city.toLowerCase();
+                
+            if (cache.size() == 0) {
+                cache.add(city);
+                answer += 5;
+            }
             
-            if (cache.remove(city)) { 
-                time += 1; 
+            if (cache.size() < cacheSize) {
+                if (cache.contains(city)) {
+                    cache.remove(city);
+                    cache.add(city);
+                    answer += 1;
+                } else {
+                    cache.add(city);
+                    answer += 5;
+                }
             } else {
-                time += 5;
-                if (cache.size() == cacheSize) {
-                    cache.pollFirst();
+                if (cache.contains(city)) {
+                    cache.remove(city);
+                    cache.add(city);
+                    answer += 1;
+                } else {
+                    cache.remove(0);
+                    cache.add(city);
+                    answer += 5;
                 }
             }
-            cache.offerLast(city); 
         }
         
-        return time;
+        return answer - 1;
     }
 }
