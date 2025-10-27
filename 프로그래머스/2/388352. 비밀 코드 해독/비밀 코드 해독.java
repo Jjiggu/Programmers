@@ -1,32 +1,30 @@
 import java.util.*;
 
 class Solution {
-    List<int[]> comb = new ArrayList<>();
+    List<List<Integer>> comb = new ArrayList<>();
     
     public int solution(int n, int[][] q, int[] ans) {
         int answer = 0;
         
         dfs(0, n, new ArrayList<>());
         
-        for (int[] com : comb) {
+        for (List<Integer> com : comb) {
             answer += check(com, q, ans);
         }
         
         return answer;
     }
     
-    private int check(int[] com, int[][] q, int[] ans) {
-        HashSet<Integer> s = new HashSet<>();
-        for (int num : com) s.add(num);
+    private int check(List<Integer> com, int[][] q, int[] ans) {
         
         for (int i = 0; i < q.length; i++) {
-            int[] inputQ = q[i];
+            int[] compareQ = q[i];
             int cnt = 0;
             
-            for (int j = 0; j < inputQ.length; j++) {
-                if (s.contains(inputQ[j])) cnt++;
+            for (int j = 0; j < compareQ.length; j++) {
+                if (com.contains(compareQ[j])) cnt++;
                 if (cnt > ans[i]) return 0;
-            }    
+            }
             if (cnt != ans[i]) return 0;
         }
         
@@ -36,7 +34,7 @@ class Solution {
     private void dfs(int k, int n, List<Integer> arr) {
         
         if (arr.size() == 5) {
-            comb.add(arr.stream().mapToInt(Integer::intValue).toArray());
+            comb.add(new ArrayList<>(arr));
             return;
         }
         
