@@ -1,85 +1,108 @@
 import java.util.*;
 
 class Solution {
-    static int n, r;
-    static int maxWin = 0;
-    static int[][] dice;
-    static List<List<Integer>> combs = new ArrayList<>();
-    static List<List<Integer>> result = new ArrayList<>();
+    
+    int n, half;
+    int[][] dice;
+    boolean[] sel;  // 선택 여부 (A가 고른 주사위)
+    long bestWin = -1;  // 최대 승 
+    int[] bestPick;  // 결과 
     
     public int[] solution(int[][] dice) {
-        n = dice.length;
-        r = dice.length / 2;
-        dice = dice;
-        comb(n, r, 0, new ArrayList<>(), combs);
+        this.dice = dice;
+        this.n = dice.length;
+        this.half = n / 2;
+        this.sel = new boolean[n];
+        this.bestPick = new int[half];
         
-        for (List<Integer> aIdx : combs) {
-            int[][] diceA = new int[r][6];
-            int[][] diceB = new int[r][6];
-            int ai = 0;
-            int bi = 0;
-            for (int i = 0; i < n; i++) {
-                if (aIdx.contains(i)) diceA[ai++] = dice[i];
-                else diceB[bi++] = dice[i];
+        pick(0, 0);
+        
+        return bestPick;
+    }
+    
+    private void pick(int idx, int picked) {
+        if (picked == half) {
+            evaluate();
+            return;
+        }
+        if (idx == n) return;
+        
+        sel[idx] = true;
+        pick(idx + 1, picked + 1);  // 고르는 경우
+        
+        sel[idx] = false;
+        pick(idx + 1, picked);  // 고르지 않는 경우 
+    }
+    
+    
+    private void evaluate() {
+        long[] distA = buildDist(true);
+        long[] distB = buildDist(false);
+        
+        long[] prefB = new long[distB.length];
+        long acc = 0;
+        for (int s = 0; s < distB.length; s++) {
+            acc += distB[s];
+            prefB[s] = acc;
+        }
+        
+        long wins = 0;
+        int maxB = distB.length - 1;
+        for (int s = 0; s < distA.length; s++) {
+            long aCnt = distA[s];
+            if (aCnt == 0) continue;
+            if (maxB >= 0) { // 방어
+                int idx = Math.min(s - 1, maxB);
+                long less = (idx >= 0) ? prefB[idx] : 0;
+                wins += aCnt * less;
             }
-            List<Integer> sumA = new ArrayList<>();
-            List<Integer> sumB = new ArrayList<>();
-            getSum(diceA, 0, 0, sumA);
-            getSum(diceB, 0, 0, sumB);
+        }
+        
+        if (wins > bestWin || (wins == bestWin && lexicographicallyBetter())) {
+            bestWin = wins;
+            int[] pick = new int[half];
+            int k = 0;
+            for (int i = 0; i < n; i++) if (sel[i]) pick[k++] = i + 1;
+            bestPick = pick;
+        }
+    }
+    
+    
+    /**
+    ** flag == true -> A가 고른 주사위, false -> B 
+    ** 선택된 주사위들의 합이 s가 되는 경우의 수를 센 dist[s] 생성
+    **/
+    private long[] buildDist(boolean flag) {
+        // dist[sum] = 경우의 수 
+        long[] dist = new long[1];
+        dist[0] = 1;  // 합 0을 만드는 경우 1개 (아무것도 굴리지 않음)
+        
+        for (int i = 0; i < n; i++) {
+            if (sel[i] != flag) continue;
             
-            int win = cntWin(sumA, sumB);
-            if (win > maxWin) {
-                maxWin = win;
-                result.clear();
-                result.add(new ArrayList<>(aIdx));
-            } else if (win == maxWin) {
-                result.add(new ArrayList<>(aIdx));
+            int maxFace = 0;
+            for (int f : dice[i]) maxFace = Math.max(maxFace, f);
+            
+            long[] next = new long[dist.length + maxFace];
+            for (int s = 0; s < dist.length; s++) {
+                long cnt = dist[s];
+                if (cnt == 0) continue;
+                for (int face : dice[i]) {
+                    next[s + face] += cnt;
+                }
             }
+            dist = next;
         }
-        
-        result.sort((o1, o2) -> {
-            for (int i = 0; i < o1.size(); i++) {
-                if (!o1.get(i).equals(o2.get(i))) return o1.get(i) - o2.get(i);
-            }
-            return 0;
-        });
-        
-        int[] answer = result.get(0).stream().mapToInt(i -> i + 1).toArray();
-        return answer;
+        return dist;
     }
     
-    public void comb(int n, int r, int start, List<Integer> comb, List<List<Integer>> combs) {
-        if (comb.size() == r) {
-            combs.add(new ArrayList<>(comb));
-            return;
+    private boolean lexicographicallyBetter() {
+        int[] cur = new int[half];
+        int k = 0;
+        for (int i = 0; i < n; i++) if (sel[i]) cur[k++] = i + 1;
+        for (int i = 0; i < half; i++) {
+            if (cur[i] != bestPick[i]) return cur[i] < bestPick[i];
         }
-        for (int i = start; i < n; i++) {
-            comb.add(i);
-            comb(n, r, i + 1, comb, combs);
-            comb.remove(comb.size() - 1);
-        }
-    }
-    
-    public void getSum(int[][] dice, int idx, int sum, List<Integer> sumList) {
-        if (idx == dice.length) {
-            sumList.add(sum);
-            return;
-        }
-        for (int face : dice[idx]) {
-            getSum(dice, idx + 1, sum + face, sumList);
-        }
-    }
-    
-    public int cntWin(List<Integer> sumA, List<Integer> sumB) {
-        Collections.sort(sumA);
-        Collections.sort(sumB);
-        
-        int win = 0;
-        int j = 0;
-        for (int a : sumA) {
-            while(j < sumB.size() && sumB.get(j) < a) j++;
-            win += j;
-        }
-        return win;
+        return false;
     }
 }
