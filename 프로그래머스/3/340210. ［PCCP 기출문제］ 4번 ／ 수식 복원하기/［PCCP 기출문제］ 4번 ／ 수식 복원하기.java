@@ -4,8 +4,10 @@ class Solution {
     public String[] solution(String[] expressions) {
         String[][] expressionsArr = parseExpression(expressions);
         
+        // 가능한 최소 진법 수 (자릿수 최댓값 + 1, 최소 = 2)
         int minBase = Math.max(2, maxDigitAmongAll(expressionsArr) + 1);
         
+        // 완성식, X 포함된 식 분리 
         List<String[]> full = new ArrayList<>();
         List<String[]> withX = new ArrayList<>();
         for (String[] ex : expressionsArr) {
@@ -13,40 +15,42 @@ class Solution {
             else full.add(ex);
         }
         
+        // 가능한 진법 후보 초기화
         Set<Integer> validNum = new HashSet<>();
         for (int i = minBase; i <= 9; i++) validNum.add(i);
         
+        // 수식별 진법 탐색
         for (String[] ex : full) {
             Set<Integer> pos = new HashSet<>();
             
             for (int base = minBase; base <= 9; base++) {
-                if (!validInBase(ex[0], base) || !validInBase(ex[2], base) || !validInBase(ex[3], base)) continue;
-                Integer x = parseBase(ex[0], base);
+                if (!validInBase(ex[0], base) || !validInBase(ex[2], base) || !validInBase(ex[3], base)) continue;  // 진법 가능한 지 확인
+                Integer x = parseBase(ex[0], base);  // 해당 진법으로 변환
                 Integer y = parseBase(ex[2], base);
                 Integer r = parseBase(ex[3], base);
                 
-                Integer calc = eval(x, y, ex[1]);
-                if (calc.equals(r)) pos.add(base);
+                Integer calc = eval(x, y, ex[1]);  // 계산
+                if (calc.equals(r)) pos.add(base);  // 계산 결과 같은 경우 해당 진법 저장
             }
-            validNum.retainAll(pos);
+            validNum.retainAll(pos);  // 진법 후보와 교집합
         }
         
         List<String> answer = new ArrayList<>();
-        for (String[] ex : withX) {
+        for (String[] ex : withX) {  
             String a = ex[0];
             String op = ex[1];
             String b = ex[2];
             Set<String> reprs = new HashSet<>();
             
-            for (int base : validNum) {
+            for (int base : validNum) {  // 진법 후보 하나씩 확인
                 if (!validInBase(a, base) || !validInBase(b, base)) continue;
                 Integer x = parseBase(a, base);
                 Integer y = parseBase(b, base);
                 Integer val = eval(x, y, op);
-                reprs.add(toBase(val, base));
+                reprs.add(toBase(val, base));  // 계산 결과 저장
             }
             
-            String fill = (reprs.size() == 1) ? reprs.iterator().next() : "?";
+            String fill = (reprs.size() == 1) ? reprs.iterator().next() : "?";  // 1개 이상인 경우 ?로 대체
             
             answer.add(a + " " + op + " " + b + " = " + fill);
         }
@@ -65,7 +69,7 @@ class Solution {
     }
     
     private int maxDigit(String s) {
-        if ("X".equals(s)) return -1;
+        if ("X".equals(s)) return -1; 
         int m = -1;
         for (char c : s.toCharArray()) {
             if (c < '0' || c > '9') continue;
