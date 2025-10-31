@@ -2,58 +2,56 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        Map<String, int[]> map = new HashMap<>();
         
-        for (String record : records) {
-            String[] r = record.split(" ");
-            int time = timeToInt(r[0]);
-            String car = r[1];
-            String inOut = r[2];
-            
-            if (inOut.equals("IN")) {
-                map.putIfAbsent(car, new int[]{0, 0});
-                map.get(car)[0] = time;
-            } else {
-                int[] val = map.get(car);
-                val[1] += time - val[0];
-                val[0] = -1;
-            }
-        }
+        Map<String, int[]> map = initMap(records);
+        int[] answer = new int[map.size()];
         
-        int endOfDay = 23 * 60 + 59;
-        for (int[] val : map.values()) {
-            if (val[0] != -1) {
-                val[1] += endOfDay - val[0];
-                val[0] = -1;
-            }
-        }
-        
-        List<String> cars = new ArrayList<>(map.keySet());
-        Collections.sort(cars);
-        
-        int[] answer = new int[cars.size()];
-        for (int i = 0; i < cars.size(); i++) {
-            int totalTime = map.get(cars.get(i))[1];
-            answer[i] = calc(fees, totalTime);
+        int maxTime = 23 * 60 + 59;
+        int idx = 0;
+        for (int[] parking : map.values()) {
+            if (parking[0] != -1) parking[1] += maxTime - parking[0];
+            answer[idx++] = calFee(fees, parking);
         }
         
         return answer;
     }
     
-    private int calc(int[] fees, int totalTime) {
-        int baseTime = fees[0];
-        int baseFee = fees[1];
-        int unitTime = fees[2]; 
-        int unitFee = fees[3];
-        int fee = 0;
+    private int calFee(int[] fees, int[] parking) {
+        int basicTime = fees[0];
+        int basicFare = fees[1];
+        int unitTime = fees[2];
+        int excess = fees[3];
+        int totalFare = 0;
         
-        if (totalTime - baseTime <= 0) {
-            return baseFee;
+        if (parking[1] <= basicTime) {  // 기본 시간 내 주차 
+            totalFare = basicFare;
         } else {
-            fee += baseFee;
-            int extraFee = (int)Math.ceil((totalTime - baseTime) / (double)unitTime) * unitFee;
-            return fee + extraFee;
+            totalFare = basicFare + (int)Math.ceil((double)(parking[1] - basicTime) / unitTime) * excess;
         }
+        
+        return totalFare;
+    }
+    
+    private Map<String, int[]> initMap(String[] records) {
+        Map<String, int[]> map = new TreeMap<>();
+        
+        for (String record : records) {
+            String[] r = record.split(" ");
+            int time = timeToInt(r[0]);
+            String carNum = r[1];
+            String inOut = r[2];
+            
+            if (inOut.equals("IN")) {  // 입차인 경우
+                map.putIfAbsent(carNum, new int[]{0, 0});
+                map.get(carNum)[0] = time;
+            } else {  // 출차인 경우
+                int[] val = map.get(carNum);
+                val[1] += time - val[0];
+                val[0] = -1;
+            }
+        }
+        
+        return map;
     }
     
     private int timeToInt(String time) {
