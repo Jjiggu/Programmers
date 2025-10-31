@@ -6,17 +6,17 @@ class Solution {
         
         for (String record : records) {
             String[] r = record.split(" ");
-            int time = timeToInt(r[0]); 
+            int time = timeToInt(r[0]);
             String car = r[1];
-            String inout = r[2];
+            String inOut = r[2];
             
-            if (inout.equals("IN")) {
-                map.putIfAbsent(car, new int[]{0, 0}); 
-                map.get(car)[0] = time; 
+            if (inOut.equals("IN")) {
+                map.putIfAbsent(car, new int[]{0, 0});
+                map.get(car)[0] = time;
             } else {
                 int[] val = map.get(car);
                 val[1] += time - val[0];
-                val[0] = -1; 
+                val[0] = -1;
             }
         }
         
@@ -40,12 +40,7 @@ class Solution {
         return answer;
     }
     
-    public int timeToInt(String time) {
-        String[] arr = time.split(":");
-        return Integer.parseInt(arr[0]) * 60 + Integer.parseInt(arr[1]);
-    }
-    
-    public int calc(int[] fees, int totalTime) {
+    private int calc(int[] fees, int totalTime) {
         int baseTime = fees[0];
         int baseFee = fees[1];
         int unitTime = fees[2]; 
@@ -57,7 +52,13 @@ class Solution {
         } else {
             fee += baseFee;
             int extraFee = (int)Math.ceil((totalTime - baseTime) / (double)unitTime) * unitFee;
-            return extraFee + fee;
+            return fee + extraFee;
         }
+    }
+    
+    private int timeToInt(String time) {
+        String[] t = time.split(":");
+        
+        return Integer.parseInt(t[0]) * 60 + Integer.parseInt(t[1]);
     }
 }
