@@ -1,13 +1,15 @@
 class Solution {
     public long solution(int a, int b, int[] g, int[] s, int[] w, int[] t) {
-        long right = (long) Math.max(a, b) * 100_000_000;
-        long left = 0;
         
-        while (left < right) {
-            long mid = (left + right) / 2;
+        long left = 0;
+        long right = 400_000_000_000_000L;
+        long mid = right;
+        
+        while (left <= right) {
+            mid = (left + right) / 2;
             
-            if (isValid(mid, a, b, g, s, w, t)) {
-                right = mid;
+            if (canCarry(mid, a, b, g, s, w, t)) {
+                right = mid - 1;
             } else {
                 left = mid + 1;
             }
@@ -16,24 +18,32 @@ class Solution {
         return left;
     }
     
-    public boolean isValid(long time, int a, int b, int[] g, int[] s, int[] w, int[] t) {
-        int n = g.length;
-        long total = 0;
-        long totalG = 0;
-        long totalS = 0;
+    private boolean canCarry(long T, int A, int B, int[] g, int[] s, int[] w, int[] t) {
+        long sumGold = 0;
+        long sumSilver = 0;
+        long sumTotal = 0;
         
-        for (int i = 0; i < n; i++) {
-            long cnt = time / (2L * t[i]);
-            if (time % (2L * t[i]) >= t[i]) cnt++;
+        for (int i = 0; i < g.length; i++) {
+            long ti = t[i];
+            long wi = w[i];
             
-            long tmp = Math.min(cnt * w[i], g[i] + s[i]);
-            total += tmp;
-            totalG += Math.min(tmp, g[i]);
-            totalS += Math.min(tmp, s[i]);
+            long trips = T / (2L * ti);  // T안에 가능한 운반 횟수
+            if (T % (2L * ti) >= ti) trips++;
+            
+            long cap = trips * wi;
+            long gold = Math.min(cap, (long)g[i]);
+            long silver = Math.min(cap, (long)s[i]);
+            long total = Math.min(cap, (long) g[i] + (long) s[i]);
+            
+            sumGold += gold;
+            sumSilver += silver;
+            sumTotal += total;
+            
+            if (sumGold >= A && sumSilver >= B && sumTotal >= (long) A + B) {
+                return true;
+            }
         }
         
-        if (total >= a + b && totalG >= a && totalS>= b) return true;
-        
-        return false;
+        return sumGold >= A && sumSilver >= B && sumTotal >= (long) A + B;
     }
 }
