@@ -8,7 +8,7 @@ class Solution {
             
             if (lastDigit > 5 || (lastDigit == 5 && next >= 5)) {
                 answer += 10 - lastDigit;
-                storey += 10 - lastDigit;
+                storey += 10;
             } else {
                 answer += lastDigit;
             }
