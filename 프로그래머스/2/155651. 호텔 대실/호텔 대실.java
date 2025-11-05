@@ -12,17 +12,22 @@ class Solution {
         
         Arrays.sort(booking, (o1, o2) -> o1[0] - o2[0]);
         
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
         
-        for (int i = 0; i < n; i++) {
-            int start = booking[i][0];
-            int end = booking[i][1];
-
-            if (!pq.isEmpty() && pq.peek() <= start) pq.poll(); 
-            pq.offer(end + 10);
+        int[] timeTable = new int[60 * 24 + 11];
+        
+        for (int[] book : booking) {
+            int start = book[0];
+            int end = book[1] + 10;
+            if (end >= timeTable.length) end = 60 * 24;
+            timeTable[start] += 1;
+            timeTable[end] -= 1;
         }
-
-        return pq.size();
+        
+        for (int i = 1; i < timeTable.length; i++) {
+            timeTable[i] += timeTable[i - 1];
+        }
+        
+        return Arrays.stream(timeTable).max().getAsInt();
     }
     
     private int timeToInt(String time) {
