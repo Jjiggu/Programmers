@@ -2,11 +2,11 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] players, int m, int k) {
-        int total = 0;
         PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int total = 0;
         int curServer = 0;
         
-        for (int time = 0; time < 24; time++) {
+        for (int time = 0; time < players.length; time++) {
             while (!pq.isEmpty() && pq.peek() <= time) {
                 pq.poll();
                 curServer--;
@@ -19,12 +19,10 @@ class Solution {
                 total += toAdd;
                 curServer += toAdd;
                 
-                for (int i = 0; i < toAdd; i++) {
-                    pq.offer(time + k);
-                }
+                for (int i = 0; i < toAdd; i++) pq.offer(time + k);
             }
+            
         }
-        
         return total;
     }
 }
