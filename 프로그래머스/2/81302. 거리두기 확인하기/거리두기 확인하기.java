@@ -1,72 +1,69 @@
+import java.util.*;
+
 class Solution {
     public int[] solution(String[][] places) {
         int[] answer = new int[places.length];
+        int idx = 0;
         
-        for (int i = 0; i < places.length; i++) {
-            answer[i] = isValid(places[i]) ? 1 : 0;
+        for (String[] place : places) {
+            List<int[]> pos = findPos(place);
+            if (isValid(pos, place)) answer[idx++] = 1;
+            else answer[idx++] = 0;
         }
         
         return answer;
     }
-
-    public boolean isValid(String[] place) {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (place[i].charAt(j) == 'P') {
-                    if (!checkDistOne(place, i, j) || !checkDistTwo(place, i, j)) {
-                        return false;
-                    }
-                }
+    
+    private boolean isValid(List<int[]> pos, String[] place) {
+        
+        for (int i = 0; i < pos.size(); i++) {
+            for (int j = i + 1; j < pos.size(); j++) {
+                int[] a = pos.get(i);
+                int[] b = pos.get(j);
+                
+                if (calcDist(a, b) > 2) continue;
+                if (!checkPartition(a, b, place)) return false;
             }
         }
         return true;
     }
-
-    public boolean checkDistOne(String[] place, int x, int y) {
-        int[] dx = {-1, 1, 0, 0};
-        int[] dy = { 0, 0,-1, 1};
+    
+    private boolean checkPartition(int[] a, int[] b, String[] place) {
+        int r1 = a[0], r2 = b[0];
+        int c1 = a[1], c2 = b[1];
+        int d = calcDist(a, b);
         
-        for (int k = 0; k < 4; k++) {
-            int nx = x + dx[k];
-            int ny = y + dy[k];
-            if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5 &&
-                place[nx].charAt(ny) == 'P') {
-                return false;
+        if (d == 0) return true;
+        if (d == 1) return false;
+        
+        if (d == 2) {
+            if (r1 == r2) { // 같은 행
+                int mc = (c1 + c2) / 2;
+                return place[r1].charAt(mc) == 'X';
+            } else if (c1 == c2) { // 같은 열
+                int mr = (r1 + r2) / 2;
+                return place[mr].charAt(c1) == 'X';
+            } else { // 대각선
+                return place[r1].charAt(c2) == 'X' && place[r2].charAt(c1) == 'X';
             }
         }
+        
+        
         return true;
     }
-
-    public boolean checkDistTwo(String[] place, int x, int y) {
-        int[] dx = {-2, 2, 0, 0};
-        int[] dy = { 0, 0,-2, 2};
+    
+    private int calcDist(int[] x, int[] y) {
+        return Math.abs(x[0] - y[0]) + Math.abs(x[1] - y[1]);
+    }
+    
+    private List<int[]> findPos(String[] place) {
+        List<int[]> pos = new ArrayList<>();
         
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i]; 
-            int ny = y + dy[i];
-            int mx = x + dx[i] / 2; 
-            int my = y + dy[i] / 2;
-            if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5 &&
-                place[nx].charAt(ny) == 'P' &&
-                place[mx].charAt(my) != 'X') {
-                return false;
+        for (int i = 0; i < place.length; i++) {
+            for (int j = 0; j < place[0].length(); j++) {
+                if (place[i].charAt(j) == 'P') pos.add(new int[]{i, j});
             }
         }
-
-        int[] dxd = {1, 1,-1,-1};
-        int[] dyd = {1,-1, 1,-1};
-        
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dxd[i];
-            int ny = y + dyd[i];
-            if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5 &&
-                place[nx].charAt(ny) == 'P') {
-                if (place[x].charAt(ny) != 'X' ||
-                    place[nx].charAt(y)  != 'X') {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return pos;
     }
 }
