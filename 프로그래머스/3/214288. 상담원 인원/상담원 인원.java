@@ -2,14 +2,14 @@ import java.util.*;
 
 class Solution {
     
-    private int minWait = Integer.MAX_VALUE;
+    int minWait = Integer.MAX_VALUE;
     
     public int solution(int k, int n, int[][] reqs) {
         List<int[]>[] byType = new ArrayList[k];
         for (int i = 0; i < k; i++) byType[i] = new ArrayList<>();
         for (int[] req : reqs) byType[req[2] - 1].add(new int[]{req[0], req[1]});
-        
         for (int i = 0; i < k; i++) byType[i].sort((o1, o2) -> o1[0] - o2[0]);
+        
         int[] mentors = new int[k];
         Arrays.fill(mentors, 1);
         
@@ -36,6 +36,7 @@ class Solution {
     
     private int totalWait(List<int[]>[] byType, int[] mentors) {
         int total = 0;
+        
         for (int t = 0; t < byType.length; t++) {
             List<int[]> list = byType[t];
             if (list.isEmpty()) continue;
