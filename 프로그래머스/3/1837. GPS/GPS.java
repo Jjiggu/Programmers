@@ -6,29 +6,24 @@ class Solution {
     List<Integer>[] graph;
     
     public int solution(int n, int m, int[][] edge_list, int k, int[] gps_log) {
-        initGraph(n, edge_list);
+        initGraph(n, edge_list);  // 그래프 초기화
         
-        int[][] dp = new int[k][n + 1];
-        for (int i = 0; i <k; i++) {
-            Arrays.fill(dp[i], INF);
-        }
+        int[][] dp = new int[k][n + 1];  // dp 선언 dp[시간][정점] = 최소 수정 횟수
         
-        dp[0][gps_log[0]] = 0;
+        for (int i = 0; i <k; i++) Arrays.fill(dp[i], INF);  // 최대값으로 초기화
         
-        for (int i = 0; i < k - 1; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (dp[i][j] == INF) continue;
+        dp[0][gps_log[0]] = 0;  // 첫번째 노드는 수정 0회
+        
+        for (int t = 0; t < k - 1; t++) {  
+            for (int u = 1; u <= n; u++) {
+                if (dp[t][u] == INF) continue;  
                 
-                dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j]);
+                // int stay = dp[t][u] + (u == gps_log[t + 1] ? 0 : 1);
+                // dp[t + 1][u] = Math.min(dp[t + 1][u], stay);  // 머무르기
                 
-                for (int v : graph[j]) {
-                    dp[i + 1][v] = Math.min(dp[i + 1][v], dp[i][j]);
-                }
-            }
-            
-            for (int v = 1; v <= n; v++) {
-                if (v != gps_log[i + 1]) {
-                    dp[i + 1][v]++;
+                for (int v : graph[u]) {  // 인접된 노드로 이동
+                    int move = dp[t][u] + (v == gps_log[t + 1] ? 0 : 1);
+                    dp[t + 1][v] = Math.min(dp[t + 1][v], move);
                 }
             }
         }
