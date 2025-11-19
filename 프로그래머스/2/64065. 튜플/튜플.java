@@ -2,33 +2,25 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String s) {
-        
         s = s.substring(2, s.length() - 2);
-        String[] parts = s.split("\\},\\{");
+         
+        String[] sub = s.split("\\},\\{");        
+        Arrays.sort(sub, (o1, o2) -> o1.length() - o2.length());
         
-        List<List<Integer>> answer = new ArrayList<>();
-        for (String part : parts) {
-            List<Integer> arr = new ArrayList<>();
-            for (String num : part.split(",")) {
-                arr.add(Integer.parseInt(num));
-            }
-            answer.add(arr);
+        List<Integer> answer = new ArrayList<>();
+        Set<Integer> seen = new HashSet<>();
+        
+        for (String tuple : sub) {
+            String[] nums = tuple.split(",");
+            int[] arr = new int[nums.length];
+
+            for (int i = 0; i < nums.length; i++) {
+                int num = Integer.parseInt(nums[i]);
+                if (!seen.contains(num)) answer.add(num);
+                seen.add(num);
+            } 
         }
         
-        Collections.sort(answer, (o1, o2) -> o1.size() - o2.size());
-        
-        Set<Integer> set = new HashSet<>();
-        List<Integer> result = new ArrayList<>();
-        
-        for (List<Integer> arr : answer) {
-            for (int num : arr) {
-                if (!set.contains(num)) {
-                    set.add(num);
-                    result.add(num);
-                }
-            }
-        }
-        
-        return result.stream().mapToInt(Integer::intValue).toArray();
+        return answer.stream().mapToInt(i -> i).toArray();
     }
 }
