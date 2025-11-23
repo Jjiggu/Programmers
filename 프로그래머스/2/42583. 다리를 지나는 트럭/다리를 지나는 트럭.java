@@ -1,37 +1,44 @@
 import java.util.*;
 
 class Solution {
-    public int solution(int bridge_length, int weight, int[] truck_weights) {
-        int answer = 0;
-        Queue<Integer> q = new LinkedList<>();
-        int time = 0;
-        int weightSum = 0;
+    
+    class Truck {
+        int weight;
+        int enterTime;
         
-        for (int i = 0; i < truck_weights.length; i++) {
-            int w = truck_weights[i];
+        public Truck(int weight, int enterTime) {
+            this.weight = weight;
+            this.enterTime = enterTime;
+        }
+    }
+    
+    public int solution(int bridge_length, int weight, int[] truck_weights) {
+        Deque<Truck> q = new ArrayDeque<>();
+        int time = 0;
+        int idx = 0;
+        int curWeight = 0;
+        
+        while (idx < truck_weights.length || !q.isEmpty()) {
+            time++;
             
-            while(true) {
-                if(q.isEmpty()) {
-                    q.add(w);
-                    weightSum += w;
-                    time++;
-                    break;
-                } else if (q.size() == bridge_length) {
-                    weightSum -= q.poll();
-                } else {
-                    if (weightSum + w <= weight) {
-                        q.add(w);
-                        weightSum += w;
-                        time++;
-                        break;
-                    } else {
-                        q.add(0);
-                        time++;
-                    }
+            if (!q.isEmpty()) {
+                Truck front = q.peek();
+                if (time - front.enterTime == bridge_length) {
+                    curWeight -= front.weight;
+                    q.poll();
+                }
+            }
+            
+            if (idx < truck_weights.length) {
+                int next = truck_weights[idx];
+                if (curWeight + next <= weight) {
+                    q.offer(new Truck(next, time));
+                    curWeight += next;
+                    idx++;
                 }
             }
         }
         
-        return time + bridge_length;
+        return time;
     }
 }
