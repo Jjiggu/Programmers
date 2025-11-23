@@ -1,52 +1,66 @@
 import java.util.*;
 
 class Solution {
+    
+    List<Integer>[] graph;
+    
     public int[] solution(int[][] edges) {
-        // 1) 노드 라벨 압축: id -> 0..K-1
-        HashSet<Integer> ids = new HashSet<>();
-        for (int[] e : edges) {
-            ids.add(e[0]);
-            ids.add(e[1]);
+        int[] answer = new int[4];
+        
+        int maxNode = 0;
+        for (int[] edge : edges) {
+            maxNode = Math.max(maxNode, Math.max(edge[0], edge[1]));
         }
-        int K = ids.size();
-        int[] idList = new int[K];
-        int p = 0;
-        for (int id : ids) idList[p++] = id;
-        Arrays.sort(idList); // (정렬은 선택이지만 디버깅 편의용)
-
-        HashMap<Integer, Integer> toIdx = new HashMap<>(K * 2);
-        for (int i = 0; i < K; i++) toIdx.put(idList[i], i);
-
-        // 2) 차수 집계
-        int[] indeg = new int[K];
-        int[] outdeg = new int[K];
-        for (int[] e : edges) {
-            int u = toIdx.get(e[0]);
-            int v = toIdx.get(e[1]);
-            outdeg[u]++;
-            indeg[v]++;
+    
+        
+        int[] inDegree = new int[maxNode + 1];
+        int[] outDegree = new int[maxNode + 1];
+        
+        buildGraph(maxNode, edges, inDegree, outDegree);
+        
+        int genNode = findGenNode(maxNode, inDegree, outDegree);
+        
+        int stick = 0;
+        int eight = 0;
+        
+        for (int i = 1; i <= maxNode; i++) {
+            if (i == genNode) continue;
+            
+            if (outDegree[i] == 0 && inDegree[i] > 0) stick++;
+            if (outDegree[i] == 2 && inDegree[i] >= 2) eight++;
         }
-
-        // 3) 생성 정점(gen): indeg==0 && outdeg>=2 (유일)
-        int genIdx = -1;
-        for (int i = 0; i < K; i++) {
-            if (indeg[i] == 0 && outdeg[i] >= 2) {
-                genIdx = i;
-                break; // 유일하다고 보장됨
+        
+        int donut = outDegree[genNode] - stick - eight;
+        
+        answer[0] = genNode;
+        answer[1] = donut;
+        answer[2] = stick;
+        answer[3] = eight;
+        
+        return answer;
+    }
+    
+    private int findGenNode(int maxNode, int[] inDegree, int[] outDegree) {
+        for (int i = 1; i <= maxNode; i++) {
+            if (inDegree[i] == 0 && outDegree[i] >= 2) {
+                return i;
             }
         }
-        int genId = idList[genIdx];
-
-        // 4) 분류: 막대(out==0), 8자(in>=2 && out>=2), 도넛는 나머지
-        int bars = 0, eights = 0;
-        for (int i = 0; i < K; i++) {
-            if (i == genIdx) continue;
-            if (outdeg[i] == 0) bars++;
-            if (indeg[i] >= 2 && outdeg[i] >= 2) eights++;
+        return -1;
+    }
+    
+    private void buildGraph(int maxNode, int[][] edges, int[] inDegree, int[] outDegree) {
+        graph = new ArrayList[maxNode + 1];
+        
+        for (int i = 1; i <= maxNode; i++) graph[i] = new ArrayList<>();
+        
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            graph[u].add(v);
+            inDegree[v]++;
+            outDegree[u]++;
         }
-        int donuts = outdeg[genIdx] - bars - eights;
-
-        // 반환: [생성 정점 라벨, 도넛 수, 막대 수, 8자 수]
-        return new int[]{genId, donuts, bars, eights};
     }
 }
