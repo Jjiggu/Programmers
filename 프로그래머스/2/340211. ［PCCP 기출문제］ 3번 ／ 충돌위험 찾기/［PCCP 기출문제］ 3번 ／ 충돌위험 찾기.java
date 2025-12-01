@@ -1,8 +1,9 @@
 import java.util.*;
 
 class Solution {
+    
     private static final int MAX = 100;
-    private Map<Integer, Integer>[][] timeMap = new HashMap[MAX + 1][MAX + 1];
+    Map<Integer, Integer>[][] timeMap = new HashMap[MAX + 1][MAX + 1];
     
     public int solution(int[][] points, int[][] routes) {
         initTimeMap();
@@ -21,14 +22,6 @@ class Solution {
         }
         
         return answer;
-    }
-    
-    private void initTimeMap() {
-        for (int r = 1; r <= MAX; r++) {
-            for (int c = 1; c <= MAX; c++) {
-                timeMap[r][c] = new HashMap<>();
-            }
-        }
     }
     
     private void simulateOneRobot(int[][] points, int[] route) {
@@ -61,5 +54,13 @@ class Solution {
     private void recordVisit(int r, int c, int t) {
         Map<Integer, Integer> m = timeMap[r][c];
         m.put(t, m.getOrDefault(t, 0) + 1);
+    }
+    
+    private void initTimeMap() {
+        for (int r = 1; r <= MAX; r++) {
+            for (int c = 1; c <= MAX; c++) {
+                timeMap[r][c] = new HashMap<>();
+            }
+        }
     }
 }
