@@ -2,32 +2,32 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] cards) {
-        boolean[] visited = new boolean[cards.length];
-        ArrayList<ArrayList<Integer>> boxGroup = new ArrayList<>();
+        int n = cards.length;
+        boolean[] visited = new boolean[n];
+        List<Integer> groupSizes = new ArrayList<>();
         
-        for (int i = 0; i < cards.length; i++) {
-            if (!visited[i]) {
-                ArrayList<Integer> group = new ArrayList<>();
-                findBoxGroup(i, cards, visited, group);
-                boxGroup.add(group);
+        for (int i = 0; i < n; i++) {
+            if (visited[i]) continue;
+            
+            int cur = i;
+            int cnt = 0;
+            
+            while (!visited[cur]) {
+                visited[cur] = true;
+                cnt++;
+                cur = cards[cur] - 1;   // 다음 상자 번호 (1-based → 0-based)
             }
+            
+            if (cnt > 0) groupSizes.add(cnt);
         }
         
-        return findAnswer(boxGroup);
-    }
-    
-    public void findBoxGroup(int nowIdx, int[] cards, boolean[] visited, ArrayList<Integer> group) {
-        if (visited[nowIdx]) return;
-        visited[nowIdx] = true;
-        group.add(nowIdx + 1); 
-        int nextIdx = cards[nowIdx] - 1;
-        findBoxGroup(nextIdx, cards, visited, group);
-    }
-    
-    public int findAnswer(ArrayList<ArrayList<Integer>> boxGroup) {
-        boxGroup.sort(Comparator.comparingInt((List<Integer> l) -> l.size()).reversed());
-        if (boxGroup.size() < 2) return 0;
-
-        return boxGroup.get(0).size() * boxGroup.get(1).size();
+        // 사이클(그룹)이 2개 미만이면 점수는 0
+        if (groupSizes.size() < 2) return 0;
+        
+        // 내림차순 정렬
+        groupSizes.sort(Collections.reverseOrder());
+        
+        // 가장 큰 두 그룹의 크기 곱
+        return groupSizes.get(0) * groupSizes.get(1);
     }
 }
