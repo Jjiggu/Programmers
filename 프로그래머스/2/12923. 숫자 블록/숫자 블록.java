@@ -1,33 +1,34 @@
 class Solution {
+    
+    private static final int LIMIT = 10_000_000;
+    
     public int[] solution(long begin, long end) {
-        int len = (int)(end - begin + 1);
-        int[] answer = new int[len];
-
-        for (int idx = 0; idx < len; idx++) {
-            long num = begin + idx;
-
-            if (num == 1) {
-                answer[idx] = 0;
-            } else {
-                answer[idx] = getBlock(num);
-            }
+        int n = (int)(end - begin + 1);
+        int[] answer = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            long num = begin + i;
+            
+            if (num == 1) answer[i] = 0;
+            else answer[i] = findPrime(num);
         }
+        
         return answer;
     }
-
-    private int getBlock(long num) {
-        int limit = 10_000_000;
+    
+    private int findPrime(long n) {
+        long sqrt = (long)Math.sqrt(n);
         int res = 1;
-        for (int i = 2; i <= limit && i * i <= num; i++) {
-            if (num % i == 0) {
-                int pair = (int)(num / i);
-                if (pair <= limit && pair != num) {
-                    return pair;
-                } else if (i != num) {
-                    res = i;
-                }
+        
+        for (long i = 2; i <= sqrt; i++) {
+            if (n % i == 0) {
+                long pair = n / i;
+                
+                if (pair <= LIMIT) return (int)pair;
+                if (i <= LIMIT) res = (int)i;
             }
         }
+        
         return res;
     }
 }
