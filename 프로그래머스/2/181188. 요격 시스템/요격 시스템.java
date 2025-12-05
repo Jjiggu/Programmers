@@ -2,16 +2,21 @@ import java.util.*;
 
 class Solution {
     public int solution(int[][] targets) {
-        Arrays.sort(targets, Comparator.comparing(o1 -> o1[1]));
         int answer = 0;
-        int last = -1;
         
-        for (int[] target : targets) {
-            int s = target[0];
-            int e = target[1];
-            if (last < s) {
+        Arrays.sort(targets, (o1, o2) -> o1[1] - o2[1]);
+        
+        int maxEnd = 0;
+        
+        for (int i = 0; i < targets.length; i++) {
+            int[] cur = targets[i];
+            int start = cur[0];
+            int end = cur[1];
+            
+            // 시작 구간이 끝나는 구간보다 큰 경우 +1 하고 구간 갱신 
+            if (start >= maxEnd) {
                 answer++;
-                last = e - 1;
+                maxEnd = Math.max(maxEnd, end);
             }
         }
         
