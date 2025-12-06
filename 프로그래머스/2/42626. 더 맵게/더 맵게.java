@@ -2,24 +2,22 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] scoville, int K) {
-        
-        PriorityQueue<Long> pq = new PriorityQueue<>();
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int n = scoville.length;
         int cnt = 0;
         
-        for (long sco : scoville) pq.offer(sco);
+        for (int i = 0; i < n; i++) pq.offer(scoville[i]);
         
-        while (!pq.isEmpty() && pq.peek() < K) {
+        while (pq.size() >= 2 && cnt <= n * 3 + 1) {
+            if (pq.peek() >= K) break;
             
-            if (pq.size() < 2) return -1;
+            int first = pq.poll();
+            int second = pq.poll();
             
-            long curFir = pq.poll();
-            long curSec = pq.poll();
-            long newFood = curFir + curSec * 2;
-            
-            pq.offer(newFood);
+            pq.offer(first + second * 2);
             cnt++;
         }
         
-        return cnt;
+        return pq.peek() < K ? -1 : cnt;
     }
 }
