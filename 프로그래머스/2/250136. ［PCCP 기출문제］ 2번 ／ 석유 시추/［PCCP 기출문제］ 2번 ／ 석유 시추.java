@@ -1,82 +1,81 @@
 import java.util.*;
 
 public class Solution {
-    int N, M;
-    int[] parent, size;
-
-    public int find(int x) {
-        if (parent[x] != x)
-            parent[x] = find(parent[x]);
-        return parent[x];
-    }
-
-    public void union(int x, int y) {
-        int xr = find(x), yr = find(y);
-        if (xr == yr) return;
+    
+    class Component {
+        int size;
+        int compId;
         
-        parent[yr] = xr;
-        size[xr] += size[yr];
-    }
-
-    public int solution(int[][] land) {
-        N = land.length;
-        M = land[0].length;
-        parent = new int[N * M];
-        size = new int[N * M];
-
-        for (int i = 0; i < N * M; i++) {
-            parent[i] = i;
-            size[i] = 1;
+        public Component(int size, int compId) {
+            this.size = size;
+            this.compId = compId;
         }
-
-        int[] dx = {0, 1};
-        int[] dy = {1, 0};
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (land[i][j] == 1) {
-                    int idx = i * M + j;
-                    for (int d = 0; d < 2; d++) {
-                        int ni = i + dx[d];
-                        int nj = j + dy[d];
-                        if (ni < N && nj < M && land[ni][nj] == 1) {
-                            int nidx = ni * M + nj;
-                            union(idx, nidx);
-                        }
+    }
+    
+    int answer = 0;
+    int n, m;
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    
+    public int solution(int[][] land) {
+        this.n = land.length;
+        this.m = land[0].length;
+        boolean[][] visited = new boolean[n][m];
+        int compId = 2;  // 식별자 
+        int[] sizeArr = new int[n * m + 2];
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {            
+                if (!visited[j][i] && land[j][i] == 1) {
+                    Component component = bfs(j, i, land, visited, compId);
+                    sizeArr[component.compId] = component.size;
+                    compId++;
+                }
+            }
+        }
+        
+        for (int i = 0; i < m; i++) {
+            int total = 0;
+            Set<Integer> set = new HashSet<>();
+            for (int j = 0; j < n; j++) {            
+                int id = land[j][i];
+                if (id > 1 && set.add(id)) total += sizeArr[id];
+            }
+            
+            answer = Math.max(answer, total);
+        }
+        
+        return answer;
+    }
+    
+    private Component bfs(int startX, int startY, int[][] land, boolean[][] visited, int compId) {
+        
+        Deque<int[]> q = new ArrayDeque<>();
+        visited[startX][startY] = true;
+        land[startX][startY] = compId;
+        q.offer(new int[]{startX, startY});
+        int cnt = 1;
+        
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int x = cur[0];
+            int y = cur[1];
+            
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m) {
+                    if (!visited[nx][ny] && land[nx][ny] == 1) {
+                        cnt++;
+                        visited[nx][ny] = true;
+                        land[nx][ny] = compId;
+                        q.offer(new int[]{nx, ny});
                     }
                 }
             }
         }
-
-
-        Map<Integer, Integer> oil = new HashMap<>();
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (land[i][j] == 1) {
-                    int idx = i * M + j;
-                    int root = find(idx);
-                    oil.put(root, oil.getOrDefault(root, 0) + 1);
-                }
-            }
-        }
-
-    
-        int answer = 0;
-        for (int col = 0; col < M; col++) {
-            Set<Integer> seen = new HashSet<>();
-            for (int row = 0; row < N; row++) {
-                if (land[row][col] == 1) {
-                    int idx = row * M + col;
-                    int root = find(idx);
-                    seen.add(root);
-                }
-            }
-            int sum = 0;
-            for (int root : seen) {
-                sum += oil.get(root);
-            }
-            answer = Math.max(answer, sum);
-        }
-
-        return answer;
+        
+        return new Component(cnt, compId);
     }
 }
