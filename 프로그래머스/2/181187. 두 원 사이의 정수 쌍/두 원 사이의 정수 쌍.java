@@ -8,7 +8,7 @@ class Solution {
             long minY = 0;
             if (x < r1) minY = (long)Math.ceil(Math.sqrt((long)r1 * r1 - (long)x * x));
             
-            answer += Math.max(0, maxY - minY + 1);
+            answer += maxY - minY + 1;
         }
         
         return answer * 4;
