@@ -1,66 +1,75 @@
 import java.util.*;
 
 class Solution {
-    
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
+    List<Integer> answer = new ArrayList<>();
+    boolean[][] visited;
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
     int n, m;
+    
+    class Node {
+        int x;
+        int y;
         
+        Node(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
     public int[] solution(String[] maps) {
         this.n = maps.length;
         this.m = maps[0].length();
-        String[][] land = new String[n][m];
-        boolean[][] visited = new boolean[n][m];
-        int idx = 0;
-        List<Integer> answer = new ArrayList<>();
+        Character[][] map = new Character[n][m];
+        visited = new boolean[n][m];
         
-        for (String map : maps) {
-            land[idx] = map.split("");
-            idx++;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                map[i][j] = maps[i].charAt(j);
+            }
         }
         
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (!land[i][j].equals("X") && !visited[i][j]) {
-                    visited[i][j] = true;
-                    int dist = bfs(land, visited, i, j);
-                    answer.add(dist);
+                if (!visited[i][j] && map[i][j] != 'X') {
+                    answer.add(bfs(i, j, map));
                 }
             }
         }
         
-        if (answer.size() == 0) {
-            return new int[]{-1};
-        } else {
-            Collections.sort(answer);
-            return answer.stream().mapToInt(Integer::intValue).toArray();
-        }
+        if (answer.size() == 0) return new int[]{-1};
+        
+        Collections.sort(answer);
+        
+        return answer.stream().mapToInt(Integer::intValue).toArray();
     }
     
-    private int bfs(String[][] land, boolean[][] visited, int startX, int startY) {
-        Deque<int[]> q = new ArrayDeque<>();
-        q.add(new int[]{startX, startY});
-        int dist = Integer.parseInt(land[startX][startY]);
+    private int bfs(int startX, int startY, Character[][] map) {
+        Deque<Node> q = new ArrayDeque<>();
+
+        q.add(new Node(startX, startY));
+        visited[startX][startY] = true;
+        int distSum = map[startX][startY] - '0';
         
         while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            int x = cur[0];
-            int y = cur[1];
+            Node cur = q.poll();
+            int x = cur.x;
+            int y = cur.y;
             
             for (int i = 0; i < 4; i++) {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
                 
-                if (nx < n && ny < m && nx >= 0 && ny >= 0) {
-                    if (!land[nx][ny].equals("X") && !visited[nx][ny]) {
-                        dist += Integer.parseInt(land[nx][ny]);
-                        q.add(new int[]{nx, ny});
-                        visited[nx][ny] = true;
-                    }
-                }
+                if (nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                if (visited[nx][ny]) continue;
+                if (map[nx][ny] == 'X') continue;
+                
+                q.offer(new Node(nx, ny));
+                visited[nx][ny] = true;
+                distSum += map[nx][ny] - '0';
             }
         }
         
-        return dist;
+        return distSum;
     }
 }
