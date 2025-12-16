@@ -2,40 +2,40 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        List<Integer> result = new ArrayList<>();
-        int[] prodDay = new int[progresses.length];
-                
-        for (int i = 0; i < progresses.length; i++) {
-            int remaining = 100 - progresses[i];
-            int day = remaining / speeds[i];
-            if (remaining % speeds[i] != 0) {
-                day += 1;
-            }
-            prodDay[i] = day;
-        }
-        
-        
-        Stack<Integer> stack = new Stack<>();
-        
-        for(int i = prodDay.length - 1; i >= 0; i--){
-            stack.push(prodDay[i]);
-        }
-        
-        while (!stack.isEmpty()) {
-            int cnt = 1;
-            int nowNum = stack.pop();
+        List<Integer> answer = new ArrayList<>();
+        Deque<Integer> q = calcProgressDays(progresses, speeds);
+
+        int maxDay = q.poll();
+        int cnt = 1;
+        while (!q.isEmpty()) {
+            int cur = q.poll();
             
-            // 다음 작업의 완료일과 비교
-            while (!stack.isEmpty() && nowNum >= stack.peek()) {
-                cnt++;
-                stack.pop();
+            if (maxDay < cur) {
+                maxDay = cur;
+                answer.add(cnt);
+                cnt = 1;
+                continue;
             }
-            
-            result.add(cnt);
+            cnt++;
         }
         
-        int[] answer = result.stream().mapToInt(Integer::intValue).toArray();
+        answer.add(cnt);
         
-        return answer;
+        return answer.stream().mapToInt(Integer::intValue).toArray();
+    }
+    
+    private Deque<Integer> calcProgressDays(int[] progresses, int[] speeds) {
+        int n = progresses.length;
+        Deque<Integer> need = new ArrayDeque<>();
+        
+        for (int i = 0; i < n; i++) {
+            int days = (100 - progresses[i]) / speeds[i];
+            int left = (100 - progresses[i]) % speeds[i];
+            
+            if (left == 0) need.offer(days);
+            else need.offer(days + 1);
+        }
+        
+        return need;
     }
 }
