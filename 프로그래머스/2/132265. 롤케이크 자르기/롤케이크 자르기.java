@@ -1,28 +1,34 @@
 import java.util.*;
 
 class Solution {
+    
+    Map<Integer, Integer> toppings;
+    Set<Integer> bigBro = new HashSet<>();
+    Set<Integer> littleBro = new HashSet<>();
+    
     public int solution(int[] topping) {
+        cntToppings(topping);
         int answer = 0;
         
-        Set<Integer> set = new HashSet<>();
-        Map<Integer, Integer> type = new HashMap<>();
-        for (int t : topping) type.put(t, type.getOrDefault(t, 0) + 1);
-        
-        int rightDistinct = type.size();
-        int leftDistinct = 0;
-        
-        // 자르는 인덱스 기준 양쪽 토핑 개수만 알면 됨 (set으로 관리?)
         for (int i = 0; i < topping.length; i++) {
-            int cur = topping[i];
+            int num = topping[i];  // 현재 토핑 
             
-            if (set.add(cur)) leftDistinct++;
+            littleBro.add(num);
+            if (toppings.get(num) == 1) bigBro.remove(num);
+            toppings.put(num, toppings.get(num) - 1);
             
-            type.put(cur, type.get(cur) - 1);
-            if (type.get(cur) == 0) rightDistinct--;
-            
-            if (leftDistinct == rightDistinct) answer++;
+            if (bigBro.size() == littleBro.size()) answer++;
         }
         
         return answer;
+    }
+    
+    private void cntToppings(int[] topping) {
+        toppings = new HashMap<>();
+
+        for (int t : topping) {
+            toppings.put(t, toppings.getOrDefault(t, 0) + 1);
+            bigBro.add(t);
+        }
     }
 }
