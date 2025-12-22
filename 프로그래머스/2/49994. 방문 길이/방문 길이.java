@@ -2,32 +2,32 @@ import java.util.*;
 
 class Solution {
     
-    static int[] dx = {-1, 1, 0, 0};  // 좌, 우, 하, 상
-    static int[] dy = {0, 0, -1, 1};
+    static int[] dx = {0, 0, -1, 1};  // 상, 하, 좌, 우
+    static int[] dy = {1, -1, 0, 0};
     
     public int solution(String dirs) {
+        int answer = bfs(dirs);
         
-        return findDirection(dirs);
+        return answer;
     }
     
-    private int findDirection(String dirs) {
+    private int bfs(String dirs) {        
         int dist = 0;
         boolean[][][] visited = new boolean[11][11][4];
-        
         int x = 5;
         int y = 5;
         
-        for (char dir : dirs.toCharArray()) {
-            int d = getDirIdx(dir);
+        for (char c : dirs.toCharArray()) {            
+            int dir = convertDir(c);
             
-            int nx = x + dx[d];
-            int ny = y + dy[d];
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
             
             if (nx < 0 || ny < 0 || nx >= 11 || ny >= 11) continue;
-            
-            if (!visited[x][y][d]) {
-                visited[x][y][d] = true;
-                visited[nx][ny][reverseDir(d)] = true;
+
+            if (!visited[x][y][dir]) {
+                visited[x][y][dir] = true;
+                visited[nx][ny][reverseDir(dir)] = true;
                 dist++;
             }
             
@@ -38,23 +38,23 @@ class Solution {
         return dist;
     }
     
-    private int getDirIdx(char dir) {
-        switch(dir) {
-            case 'L' : return 0;
-            case 'R' : return 1;
-            case 'D' : return 2;
-            case 'U' : return 3;
+    private int convertDir(char dir) {
+        switch (dir) {
+            case 'U': return 0;
+            case 'D': return 1;
+            case 'L': return 2;
+            case 'R': return 3;
         }
         
         return -1;
     }
     
-    private int reverseDir(int d) {
-        switch(d) {
-            case 0 : return 1;
-            case 1 : return 0;
-            case 2 : return 3;
-            case 3 : return 2;
+    private int reverseDir(int dir) {
+        switch (dir) {
+            case 0: return 1;
+            case 1: return 0;
+            case 2: return 3;
+            case 3: return 2;
         }
         
         return -1;
