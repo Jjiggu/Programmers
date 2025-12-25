@@ -2,18 +2,21 @@ import java.util.*;
 
 class Solution {
     int solution(int[][] land) {
+        int answer = 0;
         int n = land.length;
-        
-        int[][] dp = new int[n][4];
+        int m = land[0].length;
+        int[][] dp = new int[n][m];
         
         dp[0] = land[0];
         
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 4; k++) {
-                    if (j == k) continue;
-                    dp[i][j] = Math.max(dp[i][j], land[i][j] + dp[i - 1][k]);
+        for (int col = 1; col < n; col++) {
+            for (int row = 0; row < m; row++) {
+                int maxPrev = 0;
+                for (int k = 0; k < m; k++) {
+                    if (k == row) continue;
+                    maxPrev = Math.max(maxPrev, dp[col - 1][k]);
                 }
+                dp[col][row] = maxPrev + land[col][row];
             }
         }
         
@@ -21,12 +24,11 @@ class Solution {
     }
     
     private int findMax(int[][] dp) {
-        int answer = 0;
+        int maxNum = -1;
+        int len = dp.length - 1;
         
-        for (int i = 0; i < 4; i++) {
-            answer = Math.max(answer, dp[dp.length - 1][i]);
-        }
+        for (int i = 0; i < dp[0].length; i++) maxNum = Math.max(maxNum, dp[len][i]);
         
-        return answer;
+        return maxNum;
     }
 }
