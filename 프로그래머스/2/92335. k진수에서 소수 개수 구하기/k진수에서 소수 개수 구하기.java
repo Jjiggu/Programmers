@@ -2,23 +2,16 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int k) {
-        // 1) k진수 변환
-        String s = Long.toString(n, k);
-
-        // 2) 0을 기준으로 조각 분리
-        String[] parts = s.split("0+");
-
+        String s = Long.toString(n, k);  // k진수 변환
+        String[] parts = s.split("0+");  // 0 기준 분리
         int answer = 0;
-
-        // 3) 각 조각이 소수인지 판별
+        
         for (String part : parts) {
-            if (part.isEmpty()) continue; // 빈 문자열 무시
-
             long num = Long.parseLong(part);
-
+            
             if (isPrime(num)) answer++;
         }
-
+        
         return answer;
     }
 
