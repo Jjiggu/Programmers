@@ -9,8 +9,6 @@ class Solution {
         
         dfs(0, num, new boolean[numbers.length()], new StringBuilder());
         
-        // System.out.println(set);
-        
         return set.size();
     }
     
@@ -35,14 +33,13 @@ class Solution {
     
     private boolean isPrime(String number) {
         int n = Integer.parseInt(number);
+        
+        if (n < 2) return false; 
 
-        if (n < 2) return false;
-        if (n == 2) return true;
-        if (n % 2 == 0) return false;
-
-        for (long i = 3; i * i <= n; i += 2) {
+        for (int i = 2; i <= Math.sqrt(n); i++) {
             if (n % i == 0) return false;
         }
+        
         return true;
     }
     
