@@ -3,7 +3,8 @@ import java.util.*;
 class Solution {
     public int[] solution(int n) {
         int[][] a = new int[n][n];
-        int x = -1, y = 0;
+        int x = -1;
+        int y = 0;
         int num = 1;
         int dir = 0;
         
@@ -25,13 +26,13 @@ class Solution {
         int total = n * (n + 1) / 2;
         int idx = 0;
         int[] answer = new int[total];
-        
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= i; j++) {
                 answer[idx++] = a[i][j];
             }
         }
-        
+
         return answer;
     }
 }
