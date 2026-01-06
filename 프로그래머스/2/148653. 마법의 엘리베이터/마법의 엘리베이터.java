@@ -1,6 +1,6 @@
 class Solution {
     public int solution(int storey) {
-        int answer = 0;
+       int answer = 0;
         
         while (storey > 0) {
             int lastDigit = storey % 10;
@@ -14,7 +14,7 @@ class Solution {
             }
             storey /= 10;
         }
-        
+                
         return answer;
     }
 }
