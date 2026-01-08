@@ -2,32 +2,23 @@ import java.util.*;
 
 class Solution {
     public int solution(String[][] book_time) {
-        int n = book_time.length;
-        int[][] booking = new int[n][2];
+        int MAX_TIME = 1451;
+        int[] prefixSum = new int[MAX_TIME];
         
-        for (int i = 0; i < n; i++) {
-            booking[i][0] = timeToInt(book_time[i][0]);
-            booking[i][1] = timeToInt(book_time[i][1]);
+        for (String[] time : book_time) {
+            int start = timeToInt(time[0]);
+            int end = timeToInt(time[1]) + 10;
+            prefixSum[start] += 1;
+            prefixSum[end] -= 1;
         }
         
-        Arrays.sort(booking, (o1, o2) -> o1[0] - o2[0]);
-        
-        
-        int[] timeTable = new int[60 * 24 + 11];
-        
-        for (int[] book : booking) {
-            int start = book[0];
-            int end = book[1] + 10;
-            if (end >= timeTable.length) end = 60 * 24;
-            timeTable[start] += 1;
-            timeTable[end] -= 1;
+        int answer = 0;
+        for (int i = 1; i < MAX_TIME; i++) {
+            prefixSum[i] += prefixSum[i - 1];
+            answer = Math.max(answer, prefixSum[i]);
         }
         
-        for (int i = 1; i < timeTable.length; i++) {
-            timeTable[i] += timeTable[i - 1];
-        }
-        
-        return Arrays.stream(timeTable).max().getAsInt();
+        return answer;
     }
     
     private int timeToInt(String time) {
