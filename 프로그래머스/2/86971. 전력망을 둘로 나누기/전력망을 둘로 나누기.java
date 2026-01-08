@@ -45,7 +45,5 @@ class Solution {
             graph[u].add(v);
             graph[v].add(u);
         }
-        
-        return;
     }
 }
