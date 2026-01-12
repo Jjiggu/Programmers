@@ -2,7 +2,6 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] orders, int[] course) {
-        
         Map<String, Integer> combCnt = new HashMap<>();
         
         for (String order : orders) {
@@ -16,41 +15,38 @@ class Solution {
             }
         }
         
-        List<String> answerList = new ArrayList<>();
+        List<String> answer = new ArrayList<>();
         for (int len : course) {
-            int max = 0;
-            List<String> tmp = new ArrayList<>();
-            for (Map.Entry<String, Integer> entry : combCnt.entrySet()) {
-                String comb = entry.getKey();
-                int cnt = entry.getValue();
-                
-                if (comb.length() == len && cnt >= 2) {
-                    max = Math.max(max, cnt);
+            int maxCnt = 0;
+            
+            for (String key : combCnt.keySet()) {
+                int cnt = combCnt.get(key);
+                if (key.length() == len && cnt >= 2) {
+                    maxCnt = Math.max(cnt, maxCnt);
                 }
             }
-            for (Map.Entry<String, Integer> entry : combCnt.entrySet()) {
-                String comb = entry.getKey();
-                int cnt = entry.getValue();
-                if (comb.length() == len && cnt == max && cnt >= 2) {
-                    answerList.add(comb);
+            
+            for (String key : combCnt.keySet()) {
+                int cnt = combCnt.get(key);
+                if (key.length() == len && cnt == maxCnt) {
+                    answer.add(key);
                 }
             }
         }
         
-        Collections.sort(answerList);
-        
-        return answerList.toArray(new String[0]);
+        Collections.sort(answer);
+        return answer.toArray(new String[0]);
     }
     
-    public void comb(String order, int courseLenth, int start, StringBuilder sb, Map<String, Integer> map) {
-        if (sb.length() == courseLenth) {
+    private void comb(String order, int courseLen, int start, StringBuilder sb, Map<String, Integer> map) {
+        if (sb.length() == courseLen) {
             map.put(sb.toString(), map.getOrDefault(sb.toString(), 0) + 1);
             return;
         }
         
         for (int i = start; i < order.length(); i++) {
             sb.append(order.charAt(i));
-            comb(order, courseLenth, i + 1, sb, map);
+            comb(order, courseLen, i + 1, sb, map);
             sb.deleteCharAt(sb.length() - 1);
         }
     }
