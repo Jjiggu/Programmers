@@ -2,50 +2,47 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] picks, String[] minerals) {
-        int[][] fatigue = {
-            {1, 1, 1},   // 다이아 곡괭이
-            {5, 1, 1},   // 철 곡괭이
-            {25, 5, 1}   // 돌 곡괭이
-        };
-
-        Map<String, Integer> mineralIdx = Map.of(
-            "diamond", 0,
-            "iron", 1,
-            "stone", 2
-        );
-
-        int totalPicks = picks[0] + picks[1] + picks[2];
-        int chunkCount = Math.min((minerals.length + 4) / 5, totalPicks);
-
-        // 각 chunk마다 다이아/철/돌로 캤을 때의 피로도를 저장
-        List<int[]> chunks = new ArrayList<>();
-
-        for (int i = 0; i < chunkCount; i++) {
-            int[] costs = new int[3]; // [다이아, 철, 돌] 곡괭이로의 피로도
-            for (int j = i * 5; j < i * 5 + 5 && j < minerals.length; j++) {
-                int mIdx = mineralIdx.get(minerals[j]);
+        int[][] tired = {{1, 1, 1}, {5, 1, 1}, {25, 5, 1}};
+        String[] pickTypes = {"diamond", "iron", "stone"};
+        
+        Map<String, Integer> mineralIdx = new HashMap<>();
+        int maxPick = 0;
+        
+        for (int i = 0; i < picks.length; i++) {
+            mineralIdx.put(pickTypes[i], i);  // 인덱스 매핑
+            maxPick += picks[i] * 5;  // 캘 수 있는 최대 광물 수
+        }
+        
+        int mineralCnt = Math.min(maxPick, minerals.length);  // 실제로 캘 광물의 수
+        List<int[]> costList = new ArrayList<>();
+        for (int i = 0; i < mineralCnt; i+=5) {
+            int[] costs = new int[3];  // 곡괭이당 피로도 전부 계산
+            for (int j = i; j < i + 5 && j < mineralCnt; j++) {
                 for (int k = 0; k < 3; k++) {
-                    costs[k] += fatigue[k][mIdx];
+                    costs[k] += tired[k][mineralIdx.get(minerals[j])];
                 }
             }
-            chunks.add(costs);
+            costList.add(costs);
         }
-
-        // 돌 곡괭이 피로도 기준으로 내림차순 정렬
-        chunks.sort((a, b) -> b[2] - a[2]);
-
+        
+        costList.sort((o1, o2) -> o2[2] - o1[2]);  // 돌 기준 정렬
+        
         int answer = 0;
-        int chunkIdx = 0;
-
-        // 다이아, 철, 돌 순서로 chunk에 곡괭이 배정
-        for (int pickType = 0; pickType < 3; pickType++) {
-            while (picks[pickType] > 0 && chunkIdx < chunks.size()) {
-                answer += chunks.get(chunkIdx)[pickType];
-                picks[pickType]--;
-                chunkIdx++;
+        for (int[] cost : costList) {
+            int minCost = Integer.MAX_VALUE;
+            int idx = -1;
+            for (int i = 0; i < cost.length; i++) {
+                if (picks[i] > 0 && cost[i] < minCost) {  // 피로도 가장 적게드는 곡괭이 사용
+                    minCost = cost[i];
+                    idx = i;
+                }
             }
+            picks[idx]--;
+            answer += minCost;
+            
+            if (idx == -1) break;
         }
-
+        
         return answer;
     }
 }
