@@ -1,11 +1,10 @@
 import java.util.*;
 
-class Solution {
+class Solution {    
     
     Set<List<Integer>> coordinateSet = new HashSet<>();
     
     public String[] solution(int[][] line) {
-    
         for (int i = 0; i < line.length; i++) {
             for (int j = i + 1; j < line.length; j++) {
                 calcCoordinate(line[i], line[j]);
@@ -20,7 +19,8 @@ class Solution {
         int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
         
         for (List<Integer> p : coordinateSet) {
-            int x = p.get(0), y = p.get(1);
+            int x = p.get(0);
+            int y = p.get(1);
             
             if (x < minX) minX = x;
             if (x > maxX) maxX = x;
@@ -28,13 +28,11 @@ class Solution {
             if (y > maxY) maxY = y;
         }
         
-        int width  = maxX - minX + 1;
+        int width = maxX - minX + 1;
         int height = maxY - minY + 1;
         
         char[][] board = new char[height][width];
-        for (int i = 0; i < height; i++) {
-            Arrays.fill(board[i], '.');
-        }
+        for (int i = 0; i < height; i++) Arrays.fill(board[i], '.');
         
         for (List<Integer> p : coordinateSet) {
             int x = p.get(0), y = p.get(1);
@@ -48,7 +46,7 @@ class Solution {
         for (char[] b : board) {
             answer[idx] = String.valueOf(b);
             idx++;
-        }    
+        }
         
         return answer;
     }
