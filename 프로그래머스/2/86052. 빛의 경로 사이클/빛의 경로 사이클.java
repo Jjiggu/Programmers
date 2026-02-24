@@ -2,62 +2,60 @@ import java.util.*;
 
 class Solution {
     
-    private static final int[] dx = {-1, 1, 0, 0};
-    private static final int[] dy = {0, 0, -1, 1};
-    int R, C;
+    static int[] dx = {-1, 0, 1, 0}; 
+    static int[] dy = {0, 1, 0, -1};
+    int n;
+    int m;
+    List<Integer> answer = new ArrayList<>();
+    boolean[][][] visited; 
     
     public int[] solution(String[] grid) {
-        R = grid.length;
-        C = grid[0].length();
+        // 시작점에서 4방향으로 dfs 진행 -> 시작 지점으로 돌아오는 경우 사이클 
+        n = grid.length;
+        m = grid[0].length();
+        visited = new boolean[n][m][4];  // 이때 들어오는 방향을 체크하기위해 3차원 배열 사용
         
-        boolean[][][] visited = new boolean[R][C][4];
-        List<Integer> answer = new ArrayList<>();
-        
-        for (int x = 0; x < R; x++) {
-            for (int y = 0; y < C; y++) {
-                for (int dir = 0; dir < 4; dir++) {
-                    if (!visited[x][y][dir]) {
-                        int len = trace(grid, visited, x, y, dir);
+        // 사이클 탐색 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                for (int d = 0; d < 4; d++) {
+                    if (!visited[i][j][d]) {
+                        int len = findCycle(i, j, d, grid);   
                         answer.add(len);
                     }
                 }
             }
         }
         
+        // 정답 오름차순 정렬
         Collections.sort(answer);
+        
         return answer.stream().mapToInt(Integer::intValue).toArray();
     }
     
-    private int trace(String[] grid, boolean[][][] visited, int sx, int sy, int sd) {
-        int x = sx;
-        int y = sy;
-        int dir = sd;
-        int cnt = 0;
+    private int findCycle(int x, int y, int dir, String[] grid) {    
+        
+        int len = 0;
+        int sx = x;
+        int sy = y;
+        int sDir = dir;
         
         while (!visited[x][y][dir]) {
             visited[x][y][dir] = true;
-            cnt++;
+            len++;
             
             char c = grid[x].charAt(y);
             
-            if (c == 'L') {
-                if (dir == 0) dir = 3;
-                else if (dir == 1) dir = 2;
-                else if (dir == 2) dir = 0;
-                else if (dir == 3) dir = 1;
-            } else if (c == 'R') {
-                if (dir == 0) dir = 2;
-                else if (dir == 1) dir = 3;
-                else if (dir == 2) dir = 1;
-                else if (dir == 3) dir = 0;
-            }
+            if (c == 'L') dir = (dir + 3) % 4;
+            else if (c == 'R') dir = (dir + 1) % 4;
+
+            // 범위 밖으로 나가는 경우 좌표 보정
+            x = (x + dx[dir] + n) % n;
+            y = (y + dy[dir] + m) % m;
             
-            x = (x + dx[dir] + R) % R;
-            y = (y + dy[dir] + C) % C;
-            
-            if (x == sx && y == sy && dir == sd) break;
+            if (x == sx && y == sy && dir == sDir) break;
         }
         
-        return cnt;
+       return len;
     }
 }
