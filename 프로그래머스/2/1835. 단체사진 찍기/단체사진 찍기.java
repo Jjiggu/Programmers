@@ -1,87 +1,61 @@
 import java.util.*;
 
-class Solution {       
+class Solution {
     
     private static final char[] MEMBERS = {'A','C','F','J','M','N','R','T'};
     
-    static class Cond {
-        char a, b, op;
-        int v;
-        
-        Cond(char a, char b, char op, int v) {
-            this.a = a; 
-            this.b = b; 
-            this.op = op; 
-            this.v = v; 
-        }
-    }
-    
-    List<Cond> conds;
-    boolean[] used = new boolean[8];
-    char[] perm = new char[8];
-    int[] pos = new int[26];
     int answer;
+    int memberLen = MEMBERS.length;
     
     public int solution(int n, String[] data) {
-        conds = new ArrayList<>(data.length);
-        for (String s : data) {
-            char a = s.charAt(0);
-            char b = s.charAt(2);
-            char op = s.charAt(3);
-            int v = s.charAt(4) - '0';
-            conds.add(new Cond(a, b, op, v));
-        }
-        
-        Arrays.fill(pos, -1);
         answer = 0;
-        
-        dfs(0);
+
+        dfs(0, new ArrayList<>(), new boolean[8], data);
         
         return answer;
     }
     
-    private void dfs(int depth) {
-        if (depth == 8) {
+    private void dfs(int k, List<Character> list, boolean[] used, String[] data) {
+        if (k == memberLen) {
             answer++;
             return;
         }
         
-        for (int i = 0; i < 8; i++) {
-            if (used[i]) continue;
-            char who = MEMBERS[i];
-            
-            used[i] = true;
-            perm[depth] = who;
-            pos[who - 'A'] = depth;
-            
-            if (partialOk(who)) dfs(depth + 1);
-            
-            pos[who - 'A'] = -1;
-            used[i] = false;
-        }
-    }
-
-    private boolean partialOk(char who) {
-        int pWho = pos[who - 'A'];
-        
-        for (Cond c : conds) {
-            if (c.a != who && c.b != who) continue;
-            
-            int pa = pos[c.a - 'A'];
-            int pb = pos[c.b - 'A'];
-            
-            if (pa != -1 && pb != -1) {
-                int dist = Math.abs(pa - pb) - 1;
-                int v = c.v;
-                char op = c.op;
-                
-                boolean ok = (op == '=' && dist == v)
-                          || (op == '<' && dist <  v)
-                          || (op == '>' && dist >  v);
-                
-                if (!ok) return false;
+        for (int i = 0; i < memberLen; i++) {
+            if (!used[i]) {
+                char member = MEMBERS[i];
+                used[i] = true;
+                list.add(member);
+                if (isCorrect(list, data)) {
+                    dfs(k + 1, list, used, data);   
+                }
+                list.remove(list.size() - 1);
+                used[i] = false;
             }
         }
+    }
+    
+    private boolean isCorrect(List<Character> list, String[] data) {
+        
+        for (String d : data) {
+            char mem1 = d.charAt(0);
+            char mem2 = d.charAt(2);
+            char op = d.charAt(3);
+            int v = d.charAt(4) - '0';  
+            
+            int mem1Idx = list.indexOf(mem1);
+            int mem2Idx = list.indexOf(mem2);
+            int dist = Math.abs(mem1Idx - mem2Idx) - 1;
+            
+            if (mem1Idx == -1 || mem2Idx == -1) continue;
+            
+            boolean ok = (op == '=' && dist == v) 
+                || (op == '<' && dist <  v)
+                || (op == '>' && dist >  v);
+            
+            if (!ok) return false;
+        } 
+        
         return true;
     }
 }
