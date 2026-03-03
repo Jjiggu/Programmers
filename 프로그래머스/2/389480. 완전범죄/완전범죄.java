@@ -1,28 +1,40 @@
-class Solution {    
+class Solution {
     
-    int answer = Integer.MAX_VALUE;
+    int minA = Integer.MAX_VALUE;
+    int n, m;
     
     public int solution(int[][] info, int n, int m) {
-        boolean[][][] visited = new boolean[info.length][n][m];
-        dfs(0, 0, 0, n, m, info, visited);
+        this.n = n;
+        this.m = m;
         
-        return answer == Integer.MAX_VALUE ? -1 : answer;
+        boolean[][][] visited = new boolean[info.length][n][m];
+        dfs(0, 0, 0, info, visited);
+        
+        return minA == Integer.MAX_VALUE ? -1 : minA;
     }
     
-    private void dfs(int k, int ACnt, int BCnt, int n, int m, int[][] info, boolean[][][] visited) {
+    private void dfs(int k, int ACnt, int BCnt, int[][] info, boolean[][][] visited) {
+        // 잡힌 경우
         if (ACnt >= n || BCnt >= m) return;
         
+        // 끝까지 다 돌았을 경우 
         if (k == info.length) {
-            answer = Math.min(answer, ACnt);
+            minA = Math.min(minA, ACnt);
             return;
         }
         
-        if (ACnt >= answer) return;
+        if (ACnt >= minA) return;
         if (visited[k][ACnt][BCnt]) return;
         
         visited[k][ACnt][BCnt] = true;
+            
+        int[] cur = info[k];
         
-        dfs(k + 1, ACnt + info[k][0], BCnt, n, m, info, visited);  // A가 훔치는 경우
-        dfs(k + 1, ACnt, BCnt + info[k][1], n, m, info, visited);  // B가 훔치는 경우
+        // A가 훔치는 경우
+        dfs(k + 1, ACnt + cur[0], BCnt, info, visited);
+        // B가 훔치는 경우 
+        dfs(k + 1, ACnt, BCnt + cur[1], info, visited);
+        
+        // visited[k][ACnt][BCnt] = false;
     }
 }
