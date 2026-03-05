@@ -1,72 +1,74 @@
 import java.util.*;
 
-class Solution {    
-    
-    Set<List<Integer>> coordinateSet = new HashSet<>();
-    
+class Solution {
+
+    Set<List<Long>> set = new HashSet<>();
+    long minX, maxX, minY, maxY;
+
     public String[] solution(int[][] line) {
-        for (int i = 0; i < line.length; i++) {
+
+        for (int i = 0; i < line.length - 1; i++) {
             for (int j = i + 1; j < line.length; j++) {
-                calcCoordinate(line[i], line[j]);
+                int[] a = line[i];
+                int[] b = line[j];
+                findIntersection(a[0], a[1], a[2], b[0], b[1], b[2]);
             }
         }
-        
-        return buildAnswer();
-    }
-    
-    private String[] buildAnswer() {
-        int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
-        
-        for (List<Integer> p : coordinateSet) {
-            int x = p.get(0);
-            int y = p.get(1);
-            
-            if (x < minX) minX = x;
-            if (x > maxX) maxX = x;
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
+
+        findLen();
+
+        int width = (int)(maxX - minX + 1);
+        int height = (int)(maxY - minY + 1);
+
+        String[][] arr = new String[height][width];
+        for (int i = 0; i < height; i++) Arrays.fill(arr[i], ".");
+
+        for (List<Long> pos : set) {
+            long x = pos.get(0);
+            long y = pos.get(1);
+
+            int row = (int)(maxY - y);
+            int col = (int)(x - minX);
+
+            arr[row][col] = "*";
         }
-        
-        int width = maxX - minX + 1;
-        int height = maxY - minY + 1;
-        
-        char[][] board = new char[height][width];
-        for (int i = 0; i < height; i++) Arrays.fill(board[i], '.');
-        
-        for (List<Integer> p : coordinateSet) {
-            int x = p.get(0), y = p.get(1);
-            int col = x - minX;
-            int row = maxY - y;  
-            board[row][col] = '*';
-        }
-        
+
         String[] answer = new String[height];
-        int idx = 0;
-        for (char[] b : board) {
-            answer[idx] = String.valueOf(b);
-            idx++;
+        for (int i = 0; i < height; i++) {
+            answer[i] = String.join("", arr[i]);
         }
-        
+
         return answer;
     }
-    
-    private void calcCoordinate(int[] function1, int[] function2) {
-        List<Integer> intersection = new ArrayList<>();
-        
-        long a = function1[0], b = function1[1], e = function1[2];
-        long c = function2[0], d = function2[1], f = function2[2];
-        
-        long demon = a * d - b * c;
-        if (demon == 0) return;  // 기울기가 0인 경우
-        
-        if ((b * f - e * d) % demon != 0 || (e * c - a * f) % demon != 0) return;  // 정수 좌표만 저장
-        
-        intersection.add((int)((b * f - e * d) / demon));
-        intersection.add((int)((e * c - a * f) / demon));
-        
-        coordinateSet.add(intersection);
-        
-        return;
+
+    private void findLen() {
+        minX = Long.MAX_VALUE; maxX = Long.MIN_VALUE;
+        minY = Long.MAX_VALUE; maxY = Long.MIN_VALUE;
+
+        for (List<Long> pos : set) {
+            long x = pos.get(0);
+            long y = pos.get(1);
+
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        }
+    }
+
+    private void findIntersection(int A, int B, int E, int C, int D, int F) {
+
+        long demon = 1L * A * D - 1L * B * C;
+        if (demon == 0) return;
+
+        long xNum = 1L * B * F - 1L * E * D;
+        long yNum = 1L * E * C - 1L * A * F;
+
+        if (xNum % demon != 0 || yNum % demon != 0) return;
+
+        long x = xNum / demon;
+        long y = yNum / demon;
+
+        set.add(Arrays.asList(x, y));
     }
 }
