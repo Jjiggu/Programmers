@@ -8,9 +8,7 @@ class Solution {
     public int solution(int[][] points, int[][] routes) {
         initTimeMap();
         
-        for (int[] route : routes) {
-            simulateOneRobot(points, route);
-        }
+        for (int[] route : routes) simulateRobot(points, route);
         
         int answer = 0;
         for (int r = 1; r <= MAX; r++) {
@@ -24,12 +22,12 @@ class Solution {
         return answer;
     }
     
-    private void simulateOneRobot(int[][] points, int[] route) {
-        int t = 0;
-        int startIdx = route[0] - 1;
-        int x = points[startIdx][0];
-        int y = points[startIdx][1];
-        recordVisit(x, y, t);
+    private void simulateRobot(int[][] points, int[] route) {
+        int time = 0;
+        int startPoint = route[0] - 1;
+        int x = points[startPoint][0];
+        int y = points[startPoint][1];
+        mark(x, y, time);
         
         for (int i = 0; i < route.length - 1; i++) {
             int from = route[i] - 1;
@@ -38,27 +36,27 @@ class Solution {
             int ty = points[to][1];
             
             while (x != tx) {
-                x += Integer.compare(tx, x);
-                t++;
-                recordVisit(x, y, t);
+                x += Integer.compare(tx, x); 
+                time++;
+                mark(x, y, time);
             }
             
             while (y != ty) {
-                y += Integer.compare(ty, y);
-                t++;
-                recordVisit(x, y, t);
+                y += Integer.compare(ty, y); 
+                time++;
+                mark(x, y, time);
             }
         }
     }
     
-    private void recordVisit(int r, int c, int t) {
-        Map<Integer, Integer> m = timeMap[r][c];
-        m.put(t, m.getOrDefault(t, 0) + 1);
+    private void mark(int x, int y, int time) {
+        Map<Integer, Integer> map = timeMap[x][y];
+        map.put(time, map.getOrDefault(time, 0) + 1);
     }
     
     private void initTimeMap() {
-        for (int r = 1; r <= MAX; r++) {
-            for (int c = 1; c <= MAX; c++) {
+        for (int r = 0; r <= MAX; r++) {
+            for (int c = 0; c <= MAX; c++) {
                 timeMap[r][c] = new HashMap<>();
             }
         }
