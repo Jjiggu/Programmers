@@ -1,60 +1,48 @@
 import java.util.*;
 
-public class Solution {
+class Solution {
     
-    class Component {
-        int size;
-        int compId;
-        
-        public Component(int size, int compId) {
-            this.size = size;
-            this.compId = compId;
-        }
-    }
-    
-    int answer = 0;
     int n, m;
-    int[] dx = {-1, 1, 0, 0};
-    int[] dy = {0, 0, -1, 1};
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
     
     public int solution(int[][] land) {
-        this.n = land.length;
-        this.m = land[0].length;
+        int answer = 0;
+        n = land.length;
+        m = land[0].length;
+        int groupId = 2;
+        int[] groupSize = new int[250002];
         boolean[][] visited = new boolean[n][m];
-        int compId = 2;  // 식별자 
-        int[] sizeArr = new int[n * m + 2];
         
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {            
-                if (!visited[j][i] && land[j][i] == 1) {
-                    Component component = bfs(j, i, land, visited, compId);
-                    sizeArr[component.compId] = component.size;
-                    compId++;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (!visited[i][j] && land[i][j] == 1) {
+                    land[i][j] = groupId;
+                    int size = bfs(i, j, groupId, visited, land);
+                    groupSize[groupId++] = size;
                 }
             }
         }
         
-        for (int i = 0; i < m; i++) {
-            int total = 0;
+        for (int row = 0; row < m; row++) {
             Set<Integer> set = new HashSet<>();
-            for (int j = 0; j < n; j++) {            
-                int id = land[j][i];
-                if (id > 1 && set.add(id)) total += sizeArr[id];
+            for (int col = 0; col < n; col++) {
+                if (land[col][row] != 0)
+                set.add(land[col][row]);
             }
-            
-            answer = Math.max(answer, total);
+            answer = Math.max(answer, calcSet(set, groupSize));
         }
         
         return answer;
     }
     
-    private Component bfs(int startX, int startY, int[][] land, boolean[][] visited, int compId) {
+    private int bfs(int startX, int startY, int groupId, boolean[][] visited, int[][] land) {
+        land[startX][startY] = groupId;;
+        visited[startX][startY] = true;
+        int size = 1;
         
         Deque<int[]> q = new ArrayDeque<>();
-        visited[startX][startY] = true;
-        land[startX][startY] = compId;
-        q.offer(new int[]{startX, startY});
-        int cnt = 1;
+        q.add(new int[]{startX, startY});
         
         while (!q.isEmpty()) {
             int[] cur = q.poll();
@@ -65,17 +53,26 @@ public class Solution {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
                 
-                if (nx >= 0 && ny >= 0 && nx < n && ny < m) {
-                    if (!visited[nx][ny] && land[nx][ny] == 1) {
-                        cnt++;
-                        visited[nx][ny] = true;
-                        land[nx][ny] = compId;
-                        q.offer(new int[]{nx, ny});
-                    }
+                if (nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                if (!visited[nx][ny] && land[nx][ny] == 1) {
+                    visited[nx][ny] = true;
+                    land[nx][ny] = groupId;
+                    q.add(new int[]{nx, ny});
+                    size++;
                 }
             }
         }
         
-        return new Component(cnt, compId);
+        return size;
+    }
+    
+    private int calcSet(Set<Integer> set, int[] groupSize) {
+        int oilCnt = 0;
+        
+        for (int groupId : set) {
+            oilCnt += groupSize[groupId];
+        }
+        
+        return oilCnt;
     }
 }
