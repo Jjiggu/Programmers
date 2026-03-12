@@ -5,40 +5,39 @@ class Solution {
     List<Set<Integer>> candidateKeys = new ArrayList<>();
     
     public int solution(String[][] relation) {
-        int maxCol = relation[0].length;
         
-        for (int i = 0; i <= maxCol; i++) {
-            dfs(0, i, maxCol, new ArrayList<>(), relation);
+        int n = relation[0].length;
+        for (int i = 0; i <= n; i++) {
+            dfs(0, i, new ArrayList<>(), relation);
         }
         
         return candidateKeys.size();
     }
     
-    private void dfs(int start, int target, int maxCol, ArrayList<Integer> arr, String[][] relation) {
-        if (arr.size() == target) {
-            Set<Integer> curSet = new HashSet<>(arr);
+    private void dfs(int k, int target, List<Integer> list, String[][] relation) {
+        if (list.size() == target) {
+            Set<Integer> curSet = new HashSet<>(list);
             for (Set<Integer> key : candidateKeys) {
                 if (curSet.containsAll(key)) return;
             }
             
-            if (isUnipue(curSet, relation)) candidateKeys.add(curSet);
+            if (isUnique(curSet, relation)) candidateKeys.add(curSet);
             return;
         }
         
-        for (int i = start; i < maxCol; i++) {
-            arr.add(i);
-            dfs(i + 1, target, maxCol, arr, relation);
-            arr.remove(arr.size() - 1);
+        for (int i = k; i < relation[0].length; i++) {
+            list.add(i);
+            dfs(k + 1, target, list, relation);
+            list.remove(list.size() - 1);    
         }
     }
     
-    private boolean isUnipue(Set<Integer> cols, String[][] relation) {
+    private boolean isUnique(Set<Integer> cols, String[][] relation) {
         Set<String> seen = new HashSet<>();
         
         for (String[] row : relation) {
             StringBuilder sb = new StringBuilder();
-            
-            for (int col : cols) sb.append(row[col]).append("|");
+            for (int col : cols) sb.append(row[col]);
             
             if (!seen.add(sb.toString())) return false;
         }
