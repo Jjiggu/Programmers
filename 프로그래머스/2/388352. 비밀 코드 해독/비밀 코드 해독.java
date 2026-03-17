@@ -1,47 +1,51 @@
 import java.util.*;
 
 class Solution {
-    List<List<Integer>> comb = new ArrayList<>();
+    
+    int answer = 0;
+    int n;
+    int[][] q;
+    int[] ans;
     
     public int solution(int n, int[][] q, int[] ans) {
-        int answer = 0;
+        this.n = n;
+        this.q = q;
+        this.ans = ans;
         
-        dfs(0, n, new ArrayList<>());
-        
-        for (List<Integer> com : comb) {
-            answer += check(com, q, ans);
-        }
+        dfs(0, 1, new int[5]);
         
         return answer;
     }
     
-    private int check(List<Integer> com, int[][] q, int[] ans) {
-        
-        for (int i = 0; i < q.length; i++) {
-            int[] compareQ = q[i];
-            int cnt = 0;
-            
-            for (int j = 0; j < compareQ.length; j++) {
-                if (com.contains(compareQ[j])) cnt++;
-                if (cnt > ans[i]) return 0;
-            }
-            if (cnt != ans[i]) return 0;
-        }
-        
-        return 1;
-    }
-    
-    private void dfs(int k, int n, List<Integer> arr) {
-        
-        if (arr.size() == 5) {
-            comb.add(new ArrayList<>(arr));
+    private void dfs(int k, int start, int[] arr) {
+        if (k == 5) {
+            if (isValid(arr)) answer++;
             return;
         }
         
-        for (int i = k; i < n; i++) {
-            arr.add(i + 1);
-            dfs(i + 1, n, arr);
-            arr.remove(arr.size() - 1);
+        for (int i = start; i <= n; i++) {
+            arr[k] = i;
+            dfs(k + 1, i + 1, arr);
+            arr[k] = 0;
         }
+    }
+    
+    private boolean isValid(int[] cur) {
+        for (int k = 0; k < q.length; k++) {
+            int curCnt = 0;
+            for (int i = 0; i < 5; i++) {
+                int[] target = q[k];
+                if (contains(cur, target[i])) curCnt++;
+            }
+            if (curCnt != ans[k]) return false;
+        }
+        return true;
+    }
+    
+    private boolean contains(int[] arr, int target) {
+        for (int num : arr) {
+            if (num == target) return true;
+        }
+        return false;
     }
 }
