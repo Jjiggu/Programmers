@@ -1,8 +1,9 @@
 import java.util.*;
 
 class Solution {
+    
     class Job {
-        String name;
+         String name;
         int start;
         int playTime;
         int leftTime;
@@ -17,7 +18,7 @@ class Solution {
     
     public String[] solution(String[][] plans) {
         int n = plans.length;
-        Job[] jobArr = new Job[n]; 
+        Job[] jobArr = new Job[n];
         
         for (int i = 0; i < n; i++) {
             String[] plan = plans[i];
@@ -30,59 +31,58 @@ class Solution {
         
         Arrays.sort(jobArr, (o1, o2) -> o1.start - o2.start);
         
-        Stack<Job> pause = new Stack<>();
-        List<String> done = new ArrayList<>();
+        
+        
+        List<String> answer = new ArrayList<>();
+        Deque<Job> stack = new ArrayDeque<>();
         
         Job now = jobArr[0];
-        int currentTime = now.start;
+        int curTime = now.start;
         
         for (int i = 1; i < n; i++) {
             Job next = jobArr[i];
-            int gap = next.start - currentTime;
+            int gap = next.start - curTime;
             
-            if (gap >= now.playTime) { 
-                currentTime += now.playTime;
-                done.add(now.name);
-                gap = next.start - currentTime;
+            if (gap >= now.playTime) {
+                curTime += now.playTime;
+                answer.add(now.name);
+                gap = next.start - curTime;
                 
-                while(!pause.isEmpty() && gap > 0) {
-                    Job paused = pause.pop();
+                while (!stack.isEmpty() && gap > 0) {
+                    Job paused = stack.pop();
                     if (gap >= paused.leftTime) {
-                        currentTime += paused.leftTime;
+                        curTime += paused.leftTime;
                         gap -= paused.leftTime;
-                        done.add(paused.name);
+                        answer.add(paused.name);
                     } else {
                         paused.leftTime -= gap;
-                        currentTime += gap;
+                        curTime += gap;
                         gap = 0;
-                        pause.push(paused);
+                        stack.push(paused);
                     }
                 }
                 
                 now = next;
-                currentTime = next.start;
-            
-            } else { 
+                curTime = next.start;
+            } else {
                 now.leftTime = now.playTime - gap;
-                pause.push(now);
+                stack.push(now);
                 now = next;
-                currentTime = next.start;
-            }    
+                curTime = next.start;
+            }
         }
         
-        done.add(now.name);
-        while (!pause.isEmpty()) {
-            done.add(pause.pop().name);
+        answer.add(now.name);
+        while(!stack.isEmpty()) {
+            answer.add(stack.pop().name);
         }
         
-        return done.toArray(new String[0]);
+        return answer.toArray(new String[0]);
     }
     
-    public int startToInt(String start) {
-        String[] time = start.split(":");
-        int hour = Integer.parseInt(time[0]);
-        int min = Integer.parseInt(time[1]);
+    private int startToInt(String time) {
+        String[] arr = time.split(":");
         
-        return hour * 60 + min;
+        return 60 * Integer.parseInt(arr[0]) + Integer.parseInt(arr[1]);
     }
 }
