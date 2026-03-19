@@ -27,7 +27,7 @@ class Solution {
         timeRequired += times[0];
         
         for (int i = 1; i < n; i++) {
-            if (timeRequired > limit) return false;
+            // if (timeRequired > limit) return false;
             
             int diff = diffs[i];
             int timeCur = times[i];
