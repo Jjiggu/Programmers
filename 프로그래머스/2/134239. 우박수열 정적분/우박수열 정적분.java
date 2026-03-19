@@ -1,69 +1,67 @@
 import java.util.*;
 
 class Solution {
+    
+    List<Double> areaList = new ArrayList<>();
+    int n;
+    
     public double[] solution(int k, int[][] ranges) {
-        List<int[]> collatzList = collatz(k);
-        int n = collatzList.get(collatzList.size() - 1)[1];
+        List<Integer> collatzList = collatz(k);
         
-        double[] prefixSum = prefix(collatzList);
+        n = areaList.size();
         
-        double[] answer = new double[ranges.length];
-        for (int i = 0; i < ranges.length; i++) {
-            int[] range = ranges[i];
-            int x = range[0];
-            int y = n + range[1];
-            
-            if (x > y) {
-                answer[i] = -1;
-            } else if (x == y) {
-                answer[i] = 0;
-            } else {
-                answer[i] = prefixSum[y] - prefixSum[x];
-            }
-        }
+        double[] prefix = calcprefix();
+        double[] answer = findAnswer(prefix, ranges);
         
-        // System.out.println(Arrays.deepToString(collatzList.toArray()));
         return answer;
     }
     
-    public List<int[]> collatz(int k) {
-        List<int[]> collatzList = new ArrayList<>();
-        int num = k;
-        int idx = 1;
-        collatzList.add(new int[]{num, 0});
+    private double[] findAnswer(double[] prefix, int[][] ranges) {
+        double[] arr = new double[ranges.length];
         
-        while(num != 1) {
-            int[] tmp = new int[2];
+        for (int i = 0; i < ranges.length; i++) {
+            int[] range = ranges[i];
+            int start = range[0];
+            int end = n + range[1] - 1;
             
-            if (num % 2 == 0) {
-                tmp[0] = num / 2;
-                tmp[1] = idx;
-                num /= 2;
-                idx++;
-                collatzList.add(tmp);
-            } else if (num % 2 == 1) {
-                tmp[0] = num * 3 + 1;
-                tmp[1] = idx;
-                num = num * 3 + 1;
-                idx++;
-                collatzList.add(tmp);
-            }
+            if (start >= n || start > end) arr[i] = -1.0;
+            else arr[i] = prefix[end] - prefix[start];
         }
         
-        return collatzList;
+        return arr;
     }
     
-    public double[] prefix(List<int[]> collatzList) {
-        double[] prefixSum = new double[collatzList.size()];
-        prefixSum[0] = 0.0;
+    private double[] calcprefix() {
+        double[] arr = new double[n];
         
-        for (int idx = 1; idx < collatzList.size(); idx++) {
-            double prevX = collatzList.get(idx - 1)[0];
-            double nowX = collatzList.get(idx)[0];
-            double area = (prevX + nowX) / 2.0;  
-            prefixSum[idx] = prefixSum[idx - 1] + area;
+        for (int i = 1; i < n; i++) {
+            arr[i] = arr[i - 1] + areaList.get(i);
         }
         
-        return prefixSum;
+        return arr;
+    }
+    
+    private List<Integer> collatz(int k) {
+        int n = 0;
+        List<Integer> list = new ArrayList<>();
+        list.add(k);
+        areaList.add(0.0);
+        
+        while (k > 1) {
+            if (k % 2 == 0) k /= 2;
+            else k = k * 3 + 1;
+            
+            calcArea(n, k, list.get(n));
+            
+            n++;
+            list.add(k);
+        }
+        
+        return list;
+    }
+    
+    private void calcArea(int x, int y, int prevY) {
+        double area = (y + prevY) / 2.0;
+        areaList.add(area);
     }
 }
