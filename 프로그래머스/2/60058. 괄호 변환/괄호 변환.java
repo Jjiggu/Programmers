@@ -4,59 +4,80 @@ class Solution {
     public String solution(String p) {
         return splitString(p);
     }
-    
-    public String splitString(String w) {
-        if (w.isEmpty()) {
-            return "";
-        }
+
+    private String splitString(String s) {
+        if (s.isEmpty()) return "";
         
+        Deque<Character> q = new ArrayDeque<>();
         StringBuilder u = new StringBuilder();
         StringBuilder v = new StringBuilder();
-        Deque<Character> q = new ArrayDeque<>();
+        int openCnt = 0;
+        int closeCnt = 0;
         
-        int leftCnt = 0, rightCnt = 0;
-        int idx = 0;
-        
-        // u와 v로 분리
-        for (int i = 0; i < w.length(); i++) {
-            if (w.charAt(i) == '(') leftCnt++;  // 열린 괄호
-            else rightCnt++;  // 닫힌 괄호
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') openCnt++;
+            else if (c == ')') closeCnt++;
             
-            q.offer(w.charAt(i));
+            q.offer(c);
             
-            // 왼쪽 괄호와 오른쪽 괄호의 개수가 같아지면, u를 완성
-            if (leftCnt == rightCnt) {
+            if (openCnt == closeCnt) {
                 while (!q.isEmpty()) {
                     u.append(q.poll());
                 }
-                v.append(w.substring(i + 1));
+                v.append(s.substring(i + 1));
                 break;
             }
         }
         
-        // u가 올바른 괄호 문자열이면, v에 대해 재귀 호출
-        if (isCorrect(u.toString())) {
-            return u.toString() + splitString(v.toString());
-        } else {
-            // u가 잘못된 괄호 문자열인 경우
-            StringBuilder sb = new StringBuilder();
-            sb.append('(');
-            sb.append(splitString(v.toString()));
-            sb.append(')');
-            // u의 첫 번째와 마지막 괄호를 제거하고, 괄호를 뒤집어서 이어 붙임
-            u.deleteCharAt(0);  // 첫 번째 '(' 삭제
-            u.deleteCharAt(u.length() - 1);  // 마지막 ')' 삭제
-            sb.append(reverseU(u.toString()));
-            
-            return sb.toString();
-        }
+        if (isCorrect(u.toString())) return u.toString() + splitString(v.toString());  // 올바른 괄호 문자열이라면 반환 
+        else return transferBracket(u, v);  // u가 올바른 문자열이 아니라면 변환 과정 수행 
     }
     
-    // 괄호 문자열이 올바른지 확인
-    public boolean isCorrect(String u) {
-        Stack<Character> stack = new Stack<>();
+    private String transferBracket(StringBuilder u, StringBuilder v) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        sb.append(splitString(v.toString()));
+        sb.append(")");
+        u.deleteCharAt(0);
+        u.deleteCharAt(u.length() - 1);
+        sb.append(reverseBracket(u.toString()));
+
+        return sb.toString();
+    }
+    
+    private String reverseBracket(String s) {
+        StringBuilder sb = new StringBuilder();
         
-        for (char c : u.toCharArray()) {
+        for (char c : s.toCharArray()) {
+            if (c == '(') sb.append(')');
+            else if (c == ')') sb.append('(');
+        }
+        
+        return sb.toString();
+    }
+    
+    // 균형잡힌 문자열인지 확인하는 방법 
+    // 처음부터 "(", ")" 개수 세어보기 
+    private boolean isBalance(String s) {
+        int openCnt = 0;
+        int closeCnt = 0;
+        
+        for (char c : s.toCharArray()) {
+            if (c == '(') openCnt++;
+            else if (c == ')') closeCnt++;
+        }
+        
+        return openCnt == closeCnt;
+    }
+    
+    // 올바른 괄호 문자열인지 판별하는 방법 
+    // "(" 면 stack에 넣고 ")" 만났을 때 pop
+    // ")" 나왔는데 stack 비어있거나 끝까지 돌았는데 stack 남아있으면 false
+    private boolean isCorrect(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
+        
+        for (char c : s.toCharArray()) {
             if (c == '(') {
                 stack.push(c);
             } else if (c == ')') {
@@ -66,17 +87,5 @@ class Solution {
         }
         
         return stack.isEmpty();
-    }
-    
-    // 괄호 문자열을 뒤집어서 반환
-    public String reverseU(String u) {
-        StringBuilder sb = new StringBuilder();
-        
-        for (int i = 0; i < u.length(); i++) {
-            if (u.charAt(i) == '(') sb.append(')');
-            else sb.append('(');
-        }
-        
-        return sb.toString();
     }
 }
