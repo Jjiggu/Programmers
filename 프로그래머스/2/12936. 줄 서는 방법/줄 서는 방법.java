@@ -2,21 +2,26 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int n, long k) {
+        int[] answer = new int[n];
+
         List<Integer> numbers = new ArrayList<>();
         for (int i = 1; i <= n; i++) numbers.add(i);
 
-        int[] answer = new int[n];
-        long fact = 1;
-        for (int i = 2; i <= n; i++) fact *= i; // n! 계산
+        long fact = factorial(n);
 
-        k--; // 0-index로 맞춤
         for (int i = 0; i < n; i++) {
-            fact /= (n - i); // (n-i-1)! 값
-            int index = (int)(k / fact); 
-            answer[i] = numbers.remove(index); // index번째 수 선택
-            k %= fact;
+            fact /= (n - i); 
+            int index = (int)((k - 1) / fact);
+            answer[i] = numbers.remove(index);
+            k = (k - 1) % fact + 1;
         }
 
         return answer;
+    }
+
+    private long factorial(int n) {
+        long num = 1;
+        for (int i = 1; i <= n; i++) num *= i;
+        return num;
     }
 }
