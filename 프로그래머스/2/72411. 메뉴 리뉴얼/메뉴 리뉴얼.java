@@ -1,17 +1,19 @@
 import java.util.*;
 
 class Solution {
+    
+    Map<String, Integer> map = new HashMap<>();
+    
     public String[] solution(String[] orders, int[] course) {
-        Map<String, Integer> combCnt = new HashMap<>();
         
         for (String order : orders) {
-            char[] arr = order.toCharArray();
-            Arrays.sort(arr);
-            String sortedOrder = new String(arr);
+            String[] menu = order.split("");
+            Arrays.sort(menu);
             
-            for (int len : course) {
-                if (sortedOrder.length() < len) continue;
-                comb(sortedOrder, len, 0, new StringBuilder(), combCnt);
+            for (int c : course) {
+                if (menu.length >= c) {
+                    comb(0, menu, c, new StringBuilder());
+                }
             }
         }
         
@@ -19,15 +21,15 @@ class Solution {
         for (int len : course) {
             int maxCnt = 0;
             
-            for (String key : combCnt.keySet()) {
-                int cnt = combCnt.get(key);
+            for (String key : map.keySet()) {
+                int cnt = map.get(key);
                 if (key.length() == len && cnt >= 2) {
                     maxCnt = Math.max(cnt, maxCnt);
                 }
             }
             
-            for (String key : combCnt.keySet()) {
-                int cnt = combCnt.get(key);
+            for (String key : map.keySet()) {
+                int cnt = map.get(key);
                 if (key.length() == len && cnt == maxCnt) {
                     answer.add(key);
                 }
@@ -35,18 +37,20 @@ class Solution {
         }
         
         Collections.sort(answer);
+        
         return answer.toArray(new String[0]);
     }
     
-    private void comb(String order, int courseLen, int start, StringBuilder sb, Map<String, Integer> map) {
-        if (sb.length() == courseLen) {
+    private void comb(int start, String[] menu, int couseLen, StringBuilder sb) {
+        if (sb.length() == couseLen) {
             map.put(sb.toString(), map.getOrDefault(sb.toString(), 0) + 1);
             return;
         }
         
-        for (int i = start; i < order.length(); i++) {
-            sb.append(order.charAt(i));
-            comb(order, courseLen, i + 1, sb, map);
+        
+        for (int i = start; i < menu.length; i++) {
+            sb.append(menu[i]);
+            comb(i + 1, menu, couseLen, sb);
             sb.deleteCharAt(sb.length() - 1);
         }
     }
