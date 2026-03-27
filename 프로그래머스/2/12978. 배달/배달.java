@@ -1,7 +1,8 @@
 import java.util.*;
 
-class Solution {    
-    static class Node {
+class Solution {
+    
+    class Node {
         int v;
         int cost;
         
@@ -11,21 +12,12 @@ class Solution {
         }
     }
     
-    static List<Node>[] graph;
+    List<Node>[] graph;
     
     public int solution(int N, int[][] road, int K) {
-        graph = new ArrayList[N + 1];
-        for (int i = 1; i <= N; i++) graph[i] = new ArrayList<>();
+        buildGraph(N, road);
         
-        for (int[] r : road) {
-            int u = r[0];
-            int v = r[1];
-            int cost = r[2];
-            graph[u].add(new Node(v, cost));
-            graph[v].add(new Node(u, cost));
-        }
-        
-        int[] dist = dijkstra(N, 1);
+        int[] dist = dijstra(N, 1);
         int answer = 0;
         
         for (int d : dist) if (d <= K) answer++;
@@ -33,7 +25,7 @@ class Solution {
         return answer;
     }
     
-    private int[] dijkstra(int N, int start) {
+    private int[] dijstra(int N, int start) {
         int[] dist = new int[N + 1];
         PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
         
@@ -57,5 +49,19 @@ class Solution {
         }
         
         return dist;
+    }
+    
+    public void buildGraph(int N, int[][] road) {
+        graph = new ArrayList[N + 1];
+        
+        for (int i = 1; i <= N; i++) graph[i] = new ArrayList<>();
+        
+        for (int[] r : road) {
+            int u = r[0];
+            int v = r[1];
+            int cost = r[2];
+            graph[u].add(new Node(v, cost));
+            graph[v].add(new Node(u, cost));
+        }
     }
 }
