@@ -1,25 +1,24 @@
-public class Solution {
+class Solution {
     public int solution(String s) {
         int minLen = s.length();
         int n = s.length();
         
-        for (int i = 1; i < n; i++) {  // 길이 1부터 s.length까지 탐색
+        for (int i = 1; i < n/2 + 1; i++) {  // 길이 1부터 n까지 탐색 
             StringBuilder sb = new StringBuilder();
             String prev = s.substring(0, i);
             int repeat = 1;
             
-            for (int j = i; j < n; j += i) {
-                
+            for (int j = i; j < n; j+=i) {
                 String cur = s.substring(j, Math.min(j + i, n));
                 
-                if (prev.equals(cur)) { // 패턴이 동일한 경우에는 반복 +1
+                if (prev.equals(cur)) {  // 패턴이 동일할 경우 repeat + 1
                     repeat++;
-                } else {  // 다른 패턴이 발견되는 경우
-                    if (repeat > 1) sb.append(repeat);
+                } else {  // 다른 패턴이 발견되는 경우 
+                    if (repeat > 1) sb.append(repeat);  
                     sb.append(prev);
-                    prev = cur;
+                    prev = cur;  // 새로운 패턴으로 교체
                     repeat = 1;
-                }
+                }                
             }
             
             if (repeat > 1) sb.append(repeat);
