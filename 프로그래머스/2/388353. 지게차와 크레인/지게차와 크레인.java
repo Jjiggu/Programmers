@@ -1,6 +1,7 @@
 import java.util.*;
 
-class Solution {
+class Solution {   
+    
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
     
@@ -8,63 +9,65 @@ class Solution {
         int[][] storageMap = fillWithZero(storage);
         
         for (String request : requests) {
-            char targetChar = request.charAt(0);
-            int target = (int) targetChar;
+            char target = request.charAt(0);
             
-            if (request.length() == 2) {
-                crane(storageMap, target);
+            if (request.length() == 1) {
+                forkLift((int)target, 0, 0, storageMap);
             } else {
-                forkLift(storageMap, target);
+                crane((int)target, storageMap);
             }
         }
         
-        return countRemaining(storageMap);
+        return countAnswer(storageMap);
     }
     
-    private void crane(int[][] storageMap, int target) {
-        int n = storageMap.length;
-        int m = storageMap[0].length;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (storageMap[i][j] == target) {
-                    storageMap[i][j] = 0;
-                }
-            }
-        }
-    }
-    
-    private void forkLift(int[][] storageMap, int target) {
-        int n = storageMap.length;
-        int m = storageMap[0].length;
-        
-        boolean[][] vis = new boolean[n][m];
+    private void forkLift(int target, int startX, int startY, int[][] storageMap) {
+        boolean[][] visited = new boolean[storageMap.length][storageMap[0].length];
         Deque<int[]> q = new ArrayDeque<>();
         
-        q.add(new int[]{0, 0});
-        vis[0][0] = true;
+        q.add(new int[]{startX, startY});
+        visited[startX][startY] = true;
         
-        while(!q.isEmpty()) {
+        while (!q.isEmpty()) {
             int[] cur = q.poll();
             int x = cur[0];
             int y = cur[1];
             
             for (int i = 0; i < 4; i++) {
-                int nx = dx[i] + x;
-                int ny = dy[i] + y;
+                int nx = x + dx[i];
+                int ny = y + dy[i];
                 
-                if (nx < 0 || ny < 0 || nx >= n || ny >= m || vis[nx][ny]) continue;
+                if (nx < 0 || ny < 0 || nx >= storageMap.length || ny >= storageMap[0].length || visited[nx][ny]) continue;
                 
                 if (storageMap[nx][ny] == target) {
                     storageMap[nx][ny] = 0;
-                    vis[nx][ny] = true;
+                    visited[nx][ny] = true;
                 } else if (storageMap[nx][ny] == 0) {
-                    vis[nx][ny] = true;
                     q.add(new int[]{nx, ny});
+                    visited[nx][ny] = true;
                 }
             }
         }
+    }
+    
+    private void crane(int target, int[][] storageMap) {
+        for (int i = 0; i < storageMap.length; i++) {
+            for (int j = 0; j < storageMap[0].length; j++) {
+                if (storageMap[i][j] == target) storageMap[i][j] = 0;
+            }
+        }
+    }
+    
+    private int countAnswer(int[][] storageMap) {
+        int answer = 0;
         
-        return;
+        for (int i = 0; i < storageMap.length; i++) {
+            for (int j = 0; j < storageMap[0].length; j++) {
+                if (storageMap[i][j] != 0) answer++;
+            }
+        }
+        
+        return answer;
     }
     
     private int[][] fillWithZero(String[] storage) {
@@ -75,22 +78,10 @@ class Solution {
         for (int i = 0; i < n; i++) {
             String row = storage[i];
             for (int j = 0; j < m; j++) {
-                map[i + 1][j + 1] = row.charAt(j); 
+                map[i + 1][j + 1] = row.charAt(j);
             }
         }
         
         return map;
-    }
-    
-    private int countRemaining(int[][] storageMap) {
-        int totalRows = storageMap.length;
-        int totalCols = storageMap[0].length;
-        int cnt = 0;
-        for (int i = 1; i < totalRows - 1; i++) {
-            for (int j = 1; j < totalCols - 1; j++) {
-                if (storageMap[i][j] != 0) cnt++;
-            }
-        }
-        return cnt;
     }
 }
