@@ -2,18 +2,19 @@ import java.util.*;
 
 class Solution {
     
-    static final Set<HashSet<String>> set = new HashSet<>();
+    Set<List<String>> answer = new HashSet<>();
     
     public int solution(String[] user_id, String[] banned_id) {
         
-        boolean[] isUsed = new boolean[user_id.length];
-        dfs(0, isUsed, user_id, banned_id, set, new ArrayList<>());
-        return set.size();
+        dfs(0, new boolean[user_id.length], new ArrayList<>(), user_id, banned_id);
+        
+        return answer.size();
     }
     
-    private void dfs(int k, boolean[] isUsed, String[] user_id, String[] banned_id, Set<HashSet<String>> set, ArrayList<String> list) {
+    private void dfs(int k, boolean[] isUsed, List<String> list, String[] user_id, String[] banned_id) {
         if (k == banned_id.length) {
-            set.add(new HashSet<>(list));
+            Collections.sort(list);
+            answer.add(list);
             return;
         }
         
@@ -21,14 +22,12 @@ class Solution {
             if (!isUsed[i] && isSame(user_id[i], banned_id[k])) {
                 isUsed[i] = true;
                 list.add(user_id[i]);
-                dfs(k + 1, isUsed, user_id, banned_id, set, list);
-                list.remove(list.size() - 1);
+                dfs(k + 1, isUsed, list, user_id, banned_id);
                 isUsed[i] = false;
+                list.remove(user_id[i]);
             }
-        }        
+        }
     }
-    
-    
     
     private boolean isSame(String user, String banned) {
         
@@ -36,7 +35,7 @@ class Solution {
         
         for (int i = 0; i < user.length(); i++) {
             if (banned.charAt(i) == '*') continue;
-            if (banned.charAt(i) != user.charAt(i)) return false;
+            if (user.charAt(i) != banned.charAt(i)) return false;
         }
         
         return true;
